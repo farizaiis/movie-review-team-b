@@ -1,24 +1,24 @@
-const { Genre } = require('../models/indexModels');
+const { Tag } = require('../models');
 
-class GenreController{
+class TagsController{
 
     static create (req, res, next) {
         let { name } = req.body;
 
-        Genre.create({
+        Tag.create({
             name: name
         })
         .then(data => {
-            res.status(201).json({ message: 'genre has been created'});
+            res.status(201).json({ message: 'Tag has been created'});
         })
         .catch(next);
     };
 
     static getAll (req, res, next) {
-        Genre.findAll()
+        Tag.findAll()
         .then(data => {
             res.status(200).json({ 
-                genre: data
+                Tag: data
             })
         })
         .catch(next)
@@ -28,7 +28,7 @@ class GenreController{
         let { id } = req.params;
         let { name } = req.body;
 
-        Genre.update({
+        Tag.update({
             name: name
         },{
             where: {
@@ -37,9 +37,9 @@ class GenreController{
         })
         .then(data => {
             if (!data) {
-                throw { message: `genre id ${id} is not found `}
+                throw { message: `Tag id ${id} is not found `}
             } else {
-                res.status(200).json({ message: `genre id ${id} has been updated`})
+                res.status(200).json({ message: `Tag id ${id} has been updated`})
             };
         });
     };
@@ -47,19 +47,19 @@ class GenreController{
     static delete (req, res, next) {
         let { id } = req.params;
 
-        Genre.destroy({
+        Tag.destroy({
             where : {
                 id: id
             }
         })
         .then(data=> {
             if (!data) {
-                throw { message: `Genre id ${id} is not found` }
+                throw { message: `Tag id ${id} is not found` }
             } else {
-                res.status(200).json({ message: `Genre ${id} has been deleted`})
+                res.status(200).json({ message: `Tag ${id} has been deleted`})
             };
         });
     };
 }
 
-module.exports = GenreController;
+module.exports = TagsController;
