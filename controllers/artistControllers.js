@@ -1,12 +1,15 @@
 const { Artists } = require('../models')
 const joi = require('joi')
+const {validator} = require('./../helpers/validator')
 
 module.exports = {
     addArtist: async (req, res) => {
         const { fullname } = req.body
-        const file = req.file
+        const file = (req.file) ? req.file : ""
 
         try {
+            // validator(req, res, fullname, file)
+
             const schema = await joi.object({
                 fullname: joi.string().required(),
                 image: joi.string().max(200000).required()
@@ -21,7 +24,7 @@ module.exports = {
             
             if(error){
                 console.log("🚀 ~ file: ArtistsController.js ~ line 24 ~ addartist: ~ error", error)
-                res.status(400).json({
+                return res.status(400).json({
                     status: "failed",
                     message: "input uncorrectly",
                     errors: error["details"][0]["message"]
