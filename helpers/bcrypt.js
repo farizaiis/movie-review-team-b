@@ -12,4 +12,4 @@ function cekPass(rawPass, hashedPass) {
     return bcrypt.compareSync(rawPass, hashedPass);
 };
 
-module.exports = { encrypt, cekPass}
+module.exports = { encrypt, cekPass }

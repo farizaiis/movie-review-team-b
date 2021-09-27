@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const indexRouter = require('./routes/index.routes')
-const port = 6000
+const port = 8080
 
 app.use(express.json())
 app.use('/', indexRouter)
