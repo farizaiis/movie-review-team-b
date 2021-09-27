@@ -11,13 +11,22 @@ const router = require('./routes/index');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/', router);
+app.use('/api', router);
 
 // error handling
-app.use(validation);
+// app.use(validation);
 
 app.get('*', function(req,res) {
     res.status(404).send('not found');
 });
 
 app.listen(port, () => {console.log(` server aktif di port: ${port}`)});
+
+
+
+//TODO
+//Uploadfile biar bisa set default pas create awal user & admin
+//Uploadfile pas update/change ava data ga duplicate?
+//Uploadfile poster
+//Uploadfile poster ga duplicate
+//Relasi semua
