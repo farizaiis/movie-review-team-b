@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const characterRouter = require('./character.routes')
+const artistRouter = require('./artist.routes')
 
-router.use('/characters', characterRouter)
+router.use('/v1/artists', artistRouter)
 
 module.exports = router

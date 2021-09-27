@@ -14,7 +14,7 @@ module.exports = (fieldName) => {
         const storage = new CloudinaryStorage({
             cloudinary: cloudinary,
             params: {
-                folder: "characters",
+                folder: "Artists",
                 resource_type: "raw",
                 public_id: (req, file) => "image - " + new Date().getTime() + path.extname(file.originalname),
             }

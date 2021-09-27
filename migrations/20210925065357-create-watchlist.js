@@ -9,10 +9,22 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       movieId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        refrences: {
+          model: "Movies",
+          key: "id"
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        refrences: {
+          model: "Users",
+          key: "id"
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
       },
       createdAt: {
         allowNull: false,
