@@ -1,25 +1,40 @@
-const { watchlist, users, movies } =  require('../models')
+const { Watchlist, Users, Movies } =  require('../models')
 
 module.exports = {
     addWachlist: async (req, res) => {
-        let { userId, movieId } = req.body
+        const {id} = req.params
+        const userId = req.Users.id
 
         try {
-            const watchlistCreate = await watchlist.create({
-                userId: userId,
-                movieId: movieId
+            const checkMovie = await Watchlist.findOne({ 
+                where: {
+                    movieId: id,
+                    userId
+                }
+            });
+
+            if (checkMovie) {
+                return res.status(400).json({
+                    status: 'failed',
+                    message: 'Already added to watchlist'
+                });
+            }
+
+            const watchlistCreate = await Watchlist.create({
+                userId,
+                movieId: id
             })
 
             if (!watchlistCreate) {
                 return res.status(400).json({
                     status: "failed",
-                    message: "cannot add watchlis"
+                    message: "cannot add movie to watchlis"
                 })
             }
 
             res.status(200).json({
                 status: "success",
-                message: "successfully add to list watchlist",
+                message: "successfully add to list Watchlist",
                 data: watchlistCreate
             })
 
@@ -32,24 +47,65 @@ module.exports = {
     },
 
     getWatchlistbyIdUser: async (req, res) => {
-        const { userId, page } = req.params
+        const { userId } = req.params.userId
         try {
-            const getById = await users.findOne({
+            const getById = await Users.findOne({
                 where: {
-                    userId: userId
+                    userId
                 },
                 include: [
                     {
-                        model: movies
+                        model: Movies
                     }
                 ]
             })
 
             if (!getById) {
-                
+                return res.status(400).json({
+                    status: "failed",
+                    message: `id ${id} cannot found`
+                })
             }
+
+            return res.status(200).json({
+                status: "success",
+                message: `Success retrieved your watchlist id user ${id}`,
+                data: getById
+            })
         } catch (error) {
-            
+            return res.status(500).json({
+                status: "failed",
+                message: "Internal Server Error"
+            })
+        }
+    },
+
+    deleteWatchlistById: async (req, res) => {
+        const id = req.params.id
+
+        try {
+            const removeWatchlist = await Watchlist.destroy({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!removeWatchlist) {
+                res.status(400).json({
+                    status: "failed",
+                    message: `failed delete watchlist id ${id}`
+                })
+            }
+
+            res.status(200).json({
+                status: "Success",
+                message: `Success delete watchlist id ${id}`,
+            })
+        } catch (error) {
+            res.status(500).json({
+                status: "failed",
+                message: "internal server error"
+            })
         }
     }
 }

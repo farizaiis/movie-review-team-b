@@ -10,7 +10,8 @@
     "db:seed": "sequelize-cli db:seed:all",
     "db:seed:one": "sequelize db:seed --seed",
     "db:seed:undo": "sequelize-cli db:seed:undo",
-    "db:seed:make": "sequelize-cli seed:generate --name"
+    "db:seed:make": "sequelize-cli seed:generate --name",
+    "heroku-release": "node_modules/.bin/sequelize db:migrate && node_modules/.bin/sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",

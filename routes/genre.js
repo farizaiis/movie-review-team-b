@@ -1,11 +1,12 @@
-const router = require('express').Router();
-const GenreController = require('../controllers/genreControllers');
-const { authAdmin } = require('../middlewares/authorization');
-const auth = require('../middlewares/authorization');
+const express = require('express')
+const router = express.Router()
+// const genreController = require('../controllers/genreControllers')
+const { authAdmin } = require('../middlewares/authorization')
+const auth = require('../middlewares/authorization')
 
-router.post('/create', auth, authAdmin,GenreController.create);
-router.get('/', auth, authAdmin, GenreController.getAll);
-router.put('/update/:id', auth, authAdmin, GenreController.update);
-router.delete('/delete/:id', auth, authAdmin, GenreController.delete);
+router.post('/create', auth, authAdmin, genreController.create)
+router.get('/', auth, authAdmin, genreController.getAll)
+router.put('/update/:id', auth, authAdmin, genreController.update)
+router.delete('/delete/:id', auth, authAdmin, genreController.delete)
 
-module.exports = router;
+module.exports = router

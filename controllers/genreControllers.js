@@ -1,11 +1,11 @@
-const { genres } = require('../models/indexModels');
+const { Genre } = require('../models');
 
 class genresController{
 
     static create (req, res, next) {
         let { name } = req.body;
 
-        genres.create({
+        Genre.create({
             name: name
         })
         .then(data => {
@@ -15,7 +15,7 @@ class genresController{
     };
 
     static getAll (req, res, next) {
-        genres.findAll()
+        Genre.findAll()
         .then(data => {
             res.status(200).json({ 
                 genres: data
@@ -28,7 +28,7 @@ class genresController{
         let { id } = req.params;
         let { name } = req.body;
 
-        genres.update({
+        Genre.update({
             name: name
         },{
             where: {
@@ -47,7 +47,7 @@ class genresController{
     static delete (req, res, next) {
         let { id } = req.params;
 
-        genres.destroy({
+        Genre.destroy({
             where : {
                 id: id
             }

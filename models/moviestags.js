@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: "moviesId"
         });
     
-        MoviesTag.belongsTo(models.Tag, {
+        MoviesTag.belongsTo(models.Tags, {
           foreignKey: "tagsId"
         });
     };

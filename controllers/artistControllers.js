@@ -1,4 +1,4 @@
-const { artists } = require('../models')
+const { Artists } = require('../models')
 const joi = require('joi')
 // const {validator} = require('./../helpers/validator')
 
@@ -10,7 +10,7 @@ module.exports = {
         try {
             const schema = await joi.object({
                 fullname: joi.string().required(),
-                image: joi.string().max(200000).required()
+                image: joi.string().max(2000000).required()
             })
             
             const {error} = await schema.validate({
@@ -21,7 +21,7 @@ module.exports = {
             })
             
             if(error){
-                console.log("🚀 ~ file: artistsController.js ~ line 24 ~ addartist: ~ error", error)
+                console.log("🚀 ~ file: ArtistsController.js ~ line 24 ~ addartist: ~ error", error)
                 return res.status(400).json({
                     status: "failed",
                     message: "input uncorrectly",
@@ -29,7 +29,7 @@ module.exports = {
                 })
             }
             
-            const checkArtis = await artists.findOne({
+            const checkArtis = await Artists.findOne({
                 where: {
                     fullname: fullname
                 }
@@ -42,7 +42,7 @@ module.exports = {
                 });
             }
 
-            const artistCreate = await artists.create({
+            const artistCreate = await Artists.create({
                 fullname,
                 image: file.path
             })
@@ -70,7 +70,7 @@ module.exports = {
 
     getArtist: async(req, res) => {
         try {
-            const getAll = await artists.findAll({
+            const getAll = await Artists.findAll({
                 attributes: [
                     'id',
                     'fullname',
@@ -96,7 +96,7 @@ module.exports = {
     getArtistById: async(req, res) => {
         const id = req.params.id
         try {
-            const getById = await artists.findOne({
+            const getById = await Artists.findOne({
                 where: {
                     id
                 }
@@ -145,7 +145,7 @@ module.exports = {
             })
 
             if(error){
-                console.log("🚀 ~ file: artistsController.js ~ line 27 ~ addartist: ~ error", error)
+                console.log("🚀 ~ file: ArtistsController.js ~ line 27 ~ addartist: ~ error", error)
                 res.status(400).json({
                     status: "failed",
                     message: "input uncorrectly",
@@ -153,7 +153,7 @@ module.exports = {
                 })
             }
 
-            await artists.update(
+            await Artists.update(
                 {
                     fullname,
                     image: file.path
@@ -164,16 +164,16 @@ module.exports = {
                 }
             )
             
-            const editartists = await artists.findByPk(id)
+            const editArtists = await Artists.findByPk(id)
 
             res.status(200).json({
                 status: "success",
                 message: `success update artist ${fullname}`,
-                data: editartists
+                data: editArtists
             })
 
         } catch (error) {
-            console.log("🚀 ~ file: artistsController.js ~ line 97 ~ updateartist: ~ error", error)
+            console.log("🚀 ~ file: ArtistsController.js ~ line 97 ~ updateartist: ~ error", error)
             
             return res.status(500).json({
                 status: "failed",
@@ -187,7 +187,7 @@ module.exports = {
         const fullname = req.params.fullname
 
         try {
-            const removeArtist = await artists.destroy({
+            const removeArtist = await Artists.destroy({
                 where: {
                     id: id
                 }

@@ -11,18 +11,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Movies.hasMany(models.Users, {
-        through: models.Watchlist,
-        as: 'Watch List'
-      })
-      Movies.belongsToMany(models.Tags, {
-        through: models.MoviesTag,
-        as: 'Movie Tag'
-      });
-      Movies.belongsToMany(models.Genre, {
-        through: models.MoviesGenre,
-        as: 'Genre'
-      });
+      Movies.belongsToMany(models.Users,
+        {
+          through: models.Watchlist,
+          as: "Watch list"
+        }
+      )
+      // Movies.belongsToMany(models.Tags,
+      //   {
+      //     through: models.MoviesTag,
+      //     as: "Movie Tag"
+      //   }
+      // )
+      // Movies.belongsToMany(models.Genre, {
+      //   through: models.MoviesGenre,
+      //   as: "Genre"
+      // })
     }
   };
   Movies.init({

@@ -10,21 +10,21 @@ module.exports = {
       },
       moviesId: {
         type: Sequelize.INTEGER,
-        refrences: {
-          model: "movies",
+        references: {
+          model: "Movies",
           key: "id"
         },
-        onUpdate: "cascade",
-        onDelete: "cascade"
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
       },
       usersId: {
         type: Sequelize.INTEGER,
-        refrences: {
-          model: "users",
+        references: {
+          model: "Users",
           key: "id"
         },
-        onUpdate: "cascade",
-        onDelete: "cascade"
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
       },
       createdAt: {
         allowNull: false,
