@@ -178,10 +178,6 @@ module.exports = {
                         });
                 }
             }
-
-            if(body.rating) {
-                return
-            }
             
             const moviesUpdate = await movies.update(
                 {
