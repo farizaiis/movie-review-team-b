@@ -3,10 +3,12 @@ const path = require("path")
 const cloudinary = require("cloudinary").v2
 const { CloudinaryStorage } = require("multer-storage-cloudinary")
 
+require('dotenv').config()
+
 cloudinary.config({ 
-    cloud_name: 'awhds', 
-    api_key: '811711878669313', 
-    api_secret: 'OqwmxpG-N0R4iFA1RcdY9EgcA5c' 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY_CLOUD, 
+    api_secret: process.env.API_SECRET_CLOUD 
 })
 
 module.exports = (fieldName) => {

@@ -1,6 +1,6 @@
 const { Artists } = require('../models')
 const joi = require('joi')
-const {validator} = require('./../helpers/validator')
+// const {validator} = require('./../helpers/validator')
 
 module.exports = {
     addArtist: async (req, res) => {
@@ -8,8 +8,6 @@ module.exports = {
         const file = (req.file) ? req.file : ""
 
         try {
-            // validator(req, res, fullname, file)
-
             const schema = await joi.object({
                 fullname: joi.string().required(),
                 image: joi.string().max(200000).required()
@@ -128,7 +126,7 @@ module.exports = {
 
     updateArtist: async (req, res) => {
         const id = req.params.id
-        const file = req.file
+        const file = (req.file) ? req.file : ""
         const {
             fullname
         } = req.body
@@ -186,6 +184,8 @@ module.exports = {
 
     deleteArtist: async (req, res) => {
         const id = req.params.id
+        const fullname = req.params.fullname
+
         try {
             const removeArtist = await Artists.destroy({
                 where: {
@@ -202,7 +202,7 @@ module.exports = {
 
             res.status(200).json({
                 status: "Success",
-                message: `Success delete artist id ${id}`,
+                message: `Success delete artist id ${fullname}`,
             })
         } catch (error) {
             console.log("🚀 ~ file: artistControllers.js ~ line 209 ~ deleteArtist: ~ error", error)
