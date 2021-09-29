@@ -9,6 +9,7 @@ const genresRouter = require('./genre')
 const tagsRouter = require('./tags')
 const moviesGenres = require('./moviesGenres')
 const moviesTags = require('./moviesTags')
+const rating = require('./ratingRoutes');
 
 router.use('/v1/artists', artistRouter)
 router.use('v1/watchlis', watchlistRouter)
@@ -19,5 +20,6 @@ router.use('/v1/genres', genresRouter)
 router.use('/v1/tags', tagsRouter)
 router.use('/v1/moviesgenres', moviesGenres)
 router.use('/v1/moviestags', moviesTags)
+router.use('/v1/review', rating)
 
 module.exports = router

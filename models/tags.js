@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // Tags.belongsToMany(models.Movies, {
-      //   through: models.MoviesTag,
-      //   as: 'Movie Tag'
-      // })
+      Tags.belongsToMany(models.Movies, {
+        through: models.MoviesTag,
+        as: 'Movie Tag'
+      })
     }
   };
   Tags.init({

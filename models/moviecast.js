@@ -11,14 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // movieCast.belongsTo(artist, { foreignKey: 'userId'})
       movieCast.belongsTo(models.Movies, { foreignKey: "moviesId"})
-      movieCast.belongsTo(models.Artists, {foreignKey: "artistId"})
+      movieCast.belongsTo(models.Artists, { foreignKey: "artistsId"})
     }
   };
   movieCast.init({
     moviesId: DataTypes.INTEGER,
-    artistId: DataTypes.INTEGER
+    artistsId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'movieCast',

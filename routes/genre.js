@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-// const genreController = require('../controllers/genreControllers')
+const genreController = require('../controllers/genreControllers')
 const { authAdmin } = require('../middlewares/authorization')
-const auth = require('../middlewares/authorization')
+const auth = require('../middlewares/authentication')
 
 router.post('/create', auth, authAdmin, genreController.create)
 router.get('/', auth, authAdmin, genreController.getAll)

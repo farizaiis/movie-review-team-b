@@ -1,4 +1,4 @@
-const { MoviesCharacters, Movies, Artist, Genre } = require('../models/indexModels');
+const { MoviesCharacters, Movies, Artist, Genre } = require('../models');
 
 
 class MoviesCharactersControllers {

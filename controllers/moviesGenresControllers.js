@@ -1,6 +1,6 @@
-const { movies } = require('../models/indexModels')
-const { genres } = require('../models/indexModels')
-const { moviesgenres } = require('../models/indexModels');
+const { movies } = require('../models')
+const { genres } = require('../models')
+const { moviesgenres } = require('../models');
 
 
 
@@ -100,7 +100,7 @@ class moviesgenresControllers {
         });
     };
 
-    static delete (res, res, next) {
+    static delete (req, res, next) {
         let { id } = req.params;
 
         moviesgenres.destroy({

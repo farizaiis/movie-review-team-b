@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Watchlist.belongsTo(models.Movies, {
-        foreignKey: 'movieId'
+        foreignKey: 'moviesId'
       });
   
       Watchlist.belongsTo(models.Users, {
-        foreignKey: 'userId'
+        foreignKey: 'usersId'
       });
   };
 }

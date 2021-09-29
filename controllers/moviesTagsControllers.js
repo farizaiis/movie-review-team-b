@@ -1,4 +1,4 @@
-const { moviestags, tags, movies } = require('../models/indexModels');
+const { moviestags, tags, movies } = require('../models');
 
 
 class moviestagsControllers {
@@ -97,7 +97,7 @@ class moviestagsControllers {
         });
     };
 
-    static delete (res, res, next) {
+    static delete (req, res, next) {
         let { id } = req.params;
 
         moviestags.destroy({

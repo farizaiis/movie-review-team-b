@@ -17,16 +17,26 @@ module.exports = (sequelize, DataTypes) => {
           as: "Watch list"
         }
       )
-      // Movies.belongsToMany(models.Tags,
-      //   {
-      //     through: models.MoviesTag,
-      //     as: "Movie Tag"
-      //   }
-      // )
-      // Movies.belongsToMany(models.Genre, {
-      //   through: models.MoviesGenre,
-      //   as: "Genre"
-      // })
+      Movies.belongsToMany(models.Users,
+        {
+          through: models.reviews,
+          as : "Movie Review"
+        }
+      )
+      Movies.belongsToMany(models.Tags,
+        {
+          through: models.MoviesTag,
+          as: "Movie Tag"
+        }
+      )
+      Movies.belongsToMany(models.Genre, {
+        through: models.MoviesGenre,
+        as: "Genre Movie"
+      })
+      Movies.belongsToMany(models.Artists, {
+        through: models.movieCast,
+        as: "Movie Cast"
+      })
     }
   };
   Movies.init({

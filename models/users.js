@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Watchlist,
         as: 'Watch list'
       });
+      Users.belongsToMany(models.Movies, {
+        through: models.reviews,
+        as : "User Review"
+      });
     }
   };
   Users.init({

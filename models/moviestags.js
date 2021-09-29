@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     moviesId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'MoviesTags',
+    modelName: 'MoviesTag',
   });
 
   return MoviesTag;
