@@ -1,11 +1,14 @@
-const { MoviesGenre, Genre, Movies } = require('../models/indexModels');
+const { movies } = require('../models/indexModels')
+const { genre } = require('../models/indexModels')
+const { moviesgenre } = require('../models/indexModels');
 
 
-class MoviesGenresControllers {
+
+class moviesgenreControllers {
     static create (req, res, next) {
         let { moviesId, genreId } = req.body;
 
-        MoviesGenre.create({
+        moviesgenre.create({
             moviesId: moviesId,
             genreId: genreId
         })
@@ -21,66 +24,66 @@ class MoviesGenresControllers {
         if(!page) {
             page = 1
         }
-        MoviesGenre.findAll({
+        moviesgenre.findAll({
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
-                    model: Genre
+                    model: genre
                 }
             ],
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesGenre)
+        res.status(200).json(moviesgenre)
     };
 
     static getMoviesByGenre(req, res, next) {
         let { genreId, page } = req.params;
 
-        MoviesGenre.findAndCountAll({
+        moviesgenre.findAndCountAll({
             where: { 
                 genreId: genreId
             },
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
-                    model: Genre
+                    model: genre
                 } 
             ],
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesGenre)
+        res.status(200).json(moviesgenre)
     };
 
     static getGenresByMovie(req, res, next) {
         let { moviesId } = req.params;
 
-        MoviesGenre.findAll({
+        moviesgenre.findAll({
             where: { 
                 moviesId: moviesId
             },
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
-                    model: Genre
+                    model: genre
                 } 
             ],
         });
-        res.status(200).json(MoviesGenre)
+        res.status(200).json(movie)
     }; 
 
     static update (req, res, next){
         let { id } = req.params;
         let { moviesId, genreId } = req.body;
 
-        MoviesGenre.update({
+        moviesgenre.update({
             moviesId: moviesId,
             genreId: genreId
         }, {
@@ -100,7 +103,7 @@ class MoviesGenresControllers {
     static delete (res, res, next) {
         let { id } = req.params;
 
-        MoviesGenre.destroy({
+        moviesgenre.destroy({
             where : {
                 id: id
             }
@@ -116,4 +119,4 @@ class MoviesGenresControllers {
 
 }
 
-module.exports = MoviesGenresControllers;
+module.exports = moviesgenreControllers;

@@ -3,7 +3,6 @@ const { movies } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
 const sequelize = require('sequelize')
-const { review } = require('../models')
 
 module.exports = {
     postMovie : async (req, res) => {            //<---- Register data movies include nge create data nya ke Table

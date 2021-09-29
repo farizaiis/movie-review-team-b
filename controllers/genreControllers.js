@@ -1,11 +1,11 @@
-const { Genre } = require('../models/indexModels');
+const { genre } = require('../models/indexModels');
 
-class GenreController{
+class genreController{
 
     static create (req, res, next) {
         let { name } = req.body;
 
-        Genre.create({
+        genre.create({
             name: name
         })
         .then(data => {
@@ -15,7 +15,7 @@ class GenreController{
     };
 
     static getAll (req, res, next) {
-        Genre.findAll()
+        genre.findAll()
         .then(data => {
             res.status(200).json({ 
                 genre: data
@@ -28,7 +28,7 @@ class GenreController{
         let { id } = req.params;
         let { name } = req.body;
 
-        Genre.update({
+        genre.update({
             name: name
         },{
             where: {
@@ -47,19 +47,19 @@ class GenreController{
     static delete (req, res, next) {
         let { id } = req.params;
 
-        Genre.destroy({
+        genre.destroy({
             where : {
                 id: id
             }
         })
         .then(data=> {
             if (!data) {
-                throw { message: `Genre id ${id} is not found` }
+                throw { message: `genre id ${id} is not found` }
             } else {
-                res.status(200).json({ message: `Genre ${id} has been deleted`})
+                res.status(200).json({ message: `genre ${id} has been deleted`})
             };
         });
     };
 }
 
-module.exports = GenreController;
+module.exports = genreController;
