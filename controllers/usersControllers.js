@@ -13,7 +13,7 @@ module.exports = {
                 fullname : Joi.string().required(),
                 email : Joi.string().required(),
                 password : Joi.string().min(6).max(12).required(),
-                poster : Joi.string()
+                img : Joi.string()
             })
 
             const check = schema.validate({ 
