@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
 const validation = require('./middlewares/validation');
+const authentication = require('./middlewares/authentication')
 
 // localhost:8080/
 const port = 8080;
