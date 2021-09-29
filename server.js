@@ -1,7 +1,10 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const indexRouter = require('./routes/index.routes')
-const port = 8080
+const port = pocess.en.PORT || 8080
+
+app.use(cors())
 
 app.use(express.json())
 app.use('/', indexRouter)
