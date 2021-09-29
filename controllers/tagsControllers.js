@@ -1,24 +1,24 @@
-const { genres } = require('../models/indexModels');
+const { tags } = require('../models');
 
-class genresController{
+class tagssController{
 
     static create (req, res, next) {
         let { name } = req.body;
 
-        genres.create({
+        tags.create({
             name: name
         })
         .then(data => {
-            res.status(201).json({ message: 'genres has been created'});
+            res.status(201).json({ message: 'tags has been created'});
         })
         .catch(next);
     };
 
     static getAll (req, res, next) {
-        genres.findAll()
+        tags.findAll()
         .then(data => {
             res.status(200).json({ 
-                genres: data
+                tags: data
             })
         })
         .catch(next)
@@ -28,7 +28,7 @@ class genresController{
         let { id } = req.params;
         let { name } = req.body;
 
-        genres.update({
+        tags.update({
             name: name
         },{
             where: {
@@ -37,9 +37,9 @@ class genresController{
         })
         .then(data => {
             if (!data) {
-                throw { message: `genres id ${id} is not found `}
+                throw { message: `tags id ${id} is not found `}
             } else {
-                res.status(200).json({ message: `genres id ${id} has been updated`})
+                res.status(200).json({ message: `tags id ${id} has been updated`})
             };
         });
     };
@@ -47,19 +47,19 @@ class genresController{
     static delete (req, res, next) {
         let { id } = req.params;
 
-        genres.destroy({
+        tags.destroy({
             where : {
                 id: id
             }
         })
         .then(data=> {
             if (!data) {
-                throw { message: `genres id ${id} is not found` }
+                throw { message: `tags id ${id} is not found` }
             } else {
-                res.status(200).json({ message: `genres ${id} has been deleted`})
+                res.status(200).json({ message: `tags ${id} has been deleted`})
             };
         });
     };
 }
 
-module.exports = genresController;
+module.exports = tagssController;

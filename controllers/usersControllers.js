@@ -13,10 +13,16 @@ module.exports = {
                 fullname : Joi.string().required(),
                 email : Joi.string().required(),
                 password : Joi.string().min(6).max(12).required(),
-                img : Joi.string()
+                poster : Joi.string()
             })
 
-            const check = schema.validate({ ...body }, { abortEarly : false });
+            const check = schema.validate({ 
+                role : body.role,
+                fullname : body.fullname,
+                email : body.email,
+                password : body.password,
+                img : req.file.path
+            }, { abortEarly : false });
 
             if (check.error) {
                 return res.status(400).json({
@@ -46,8 +52,8 @@ module.exports = {
                 fullname : body.fullname,
                 email : body.email,
                 password : hashedPassword,
-                //img: req.file.path
-            });
+                img : req.file.path
+            })
 
             const payload = {
                 role : user.dataValues.role,
@@ -263,7 +269,9 @@ module.exports = {
 
             const { error } = schema.validate(
                 {
-                    ...body
+                    fullname : body.fullname,
+                    email : body.email,
+                    img : req.file ? req.file.path : "img"
                 },
                 { abortEarly : false }
             )
@@ -288,7 +296,8 @@ module.exports = {
             
             const userUpdate = await users.update(
                 {
-                    ...body
+                    fullname : body.fullname,
+                    [req.file ? "img" : null]: req.file ? req.file.path : null
                 },
                 { where : { id } }
             ); 

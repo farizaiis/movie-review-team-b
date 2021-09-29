@@ -2,6 +2,7 @@
 const { movies } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
+const sequelize = require('sequelize')
 
 module.exports = {
     postMovie : async (req, res) => {            //<---- Register data movies include nge create data nya ke Table
@@ -9,6 +10,7 @@ module.exports = {
         try {
             const schema = Joi.object({
                 title : Joi.string().required(),
+                poster : Joi.string().required(),
                 sinopsys : Joi.string().required(),
                 rating : Joi.number().max(0).required(),
                 trailer : Joi.string().required(),
@@ -17,7 +19,10 @@ module.exports = {
                 budget : Joi.number().required()
             })
 
-            const check = schema.validate({ ...body }, { abortEarly : false });
+            const check = schema.validate({
+                ...body,
+                poster : req.file.path
+                }, { abortEarly : false });
 
             if (check.error) {
                 return res.status(400).json({
@@ -29,7 +34,8 @@ module.exports = {
             
             const checkmovie = await movies.findOne({
                 where: {
-                    title: body.title                }
+                    title: body.title
+                }
             })
 
             if(checkmovie) {
@@ -41,6 +47,7 @@ module.exports = {
 
             const dataMovie = await movies.create({
                 title : body.title,
+                poster : req.file.path,
                 sinopsys : body.sinopsys,
                 rating : body.rating,
                 trailer : body.trailer,
@@ -90,8 +97,16 @@ module.exports = {
     },
 
     getAllmovies : async (req, res) => {
+        const limit = 15;
+        const page = parseInt(req.params.page);
+        const offset = limit * (page - 1);
+
         try {
-            const moviesData = await movies.findAll(); 
+            const moviesData = await movies.findAll({
+                limit : limit,
+                offset : offset,
+                order : [["createdAt", "DESC"]]
+            }); 
             
             //check jika data admin sudah ada nilai/isi nya di table
             if(!moviesData) {
@@ -100,10 +115,22 @@ module.exports = {
                     message : "Data not found"
                 });
             }
+
+            const count = await movies.count({ distinct: true });
+            let next = page + 1;
+            if (page * limit >= count) {
+                next = 0;
+            }
+
             return res.status(200).json({
                 status : "success",
                 message : "Succesfully retrieved All data movies",
-                data: moviesData
+                data: moviesData,
+                meta : {
+                    page: page,
+                    next: next,
+                    total: count
+                }
             });
         } catch (error) {
             return res.status(500).json({
@@ -119,6 +146,7 @@ module.exports = {
         try {
             const schema = Joi.object({
                 title : Joi.string(),
+                poster : Joi.string(),
                 sinopsys : Joi.string(),
                 trailer : Joi.string(),
                 release_date : Joi.date().format("YYYY-M-D"),
@@ -150,10 +178,15 @@ module.exports = {
                         });
                 }
             }
+
+            if(body.rating) {
+                return
+            }
             
             const moviesUpdate = await movies.update(
                 {
                     ...body,
+                    [req.file ? "poster" : null]: req.file ? req.file.path : null,
                     budget : body.budget + " USD"
                 },
                 { where : { id } }
@@ -198,6 +231,31 @@ module.exports = {
                 status : "success",
                 message : "Deleted successfully",
             });
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
+    searchMovies : async (req, res) => {
+        const keywords = req.params.keyword
+        try {
+            const datamovie = await movies.findAll({
+                where : {
+                    title : {
+                        [sequelize.Op.iLike] : "%" + keywords + "%"
+                    } 
+                },
+                limit : 10
+            })
+
+            return res.status(200).json({
+                status : "success",
+                messsage : "Successfully retrieve data movie",
+                result : datamovie
+            })
         } catch (error) {
             return res.status(500).json({
                 status : "failed",
