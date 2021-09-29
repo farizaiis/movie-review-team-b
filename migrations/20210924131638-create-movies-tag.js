@@ -1,30 +1,30 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('watchlists', {
+    await queryInterface.createTable('MoviesTag', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      movieId: {
+      tagsId: {
         type: Sequelize.INTEGER,
-        refrences: {
-          model: "movies",
-          key: "id"
+        references: {
+          model : "Tags",
+          key : "id"
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE"
+        onUpdate : "CASCADE",
+        onDelete : "CASCADE"
       },
-      userId: {
+      moviesId: {
         type: Sequelize.INTEGER,
-        refrences: {
-          model: "users",
-          key: "id"
+        references: {
+          model : "Movies",
+          key : "id"
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE"
+        onUpdate : "CASCADE",
+        onDelete : "CASCADE"
       },
       createdAt: {
         allowNull: false,
@@ -37,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('watchlists');
+    await queryInterface.dropTable('MoviesTag');
   }
 };

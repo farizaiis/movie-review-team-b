@@ -1,24 +1,24 @@
-const { Tag } = require('../models');
+const { tags } = require('../models');
 
-class TagsController{
+class tagssController{
 
     static create (req, res, next) {
         let { name } = req.body;
 
-        Tag.create({
+        tags.create({
             name: name
         })
         .then(data => {
-            res.status(201).json({ message: 'Tag has been created'});
+            res.status(201).json({ message: 'tags has been created'});
         })
         .catch(next);
     };
 
     static getAll (req, res, next) {
-        Tag.findAll()
+        tags.findAll()
         .then(data => {
             res.status(200).json({ 
-                Tag: data
+                tags: data
             })
         })
         .catch(next)
@@ -28,7 +28,7 @@ class TagsController{
         let { id } = req.params;
         let { name } = req.body;
 
-        Tag.update({
+        tags.update({
             name: name
         },{
             where: {
@@ -37,9 +37,9 @@ class TagsController{
         })
         .then(data => {
             if (!data) {
-                throw { message: `Tag id ${id} is not found `}
+                throw { message: `tags id ${id} is not found `}
             } else {
-                res.status(200).json({ message: `Tag id ${id} has been updated`})
+                res.status(200).json({ message: `tags id ${id} has been updated`})
             };
         });
     };
@@ -47,19 +47,19 @@ class TagsController{
     static delete (req, res, next) {
         let { id } = req.params;
 
-        Tag.destroy({
+        tags.destroy({
             where : {
                 id: id
             }
         })
         .then(data=> {
             if (!data) {
-                throw { message: `Tag id ${id} is not found` }
+                throw { message: `tags id ${id} is not found` }
             } else {
-                res.status(200).json({ message: `Tag ${id} has been deleted`})
+                res.status(200).json({ message: `tags ${id} has been deleted`})
             };
         });
     };
 }
 
-module.exports = TagsController;
+module.exports = tagssController;

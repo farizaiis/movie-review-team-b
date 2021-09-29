@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      MoviesGenre.belongsTo(models.Movies, {
+        foreignKey: "moviesId"
+      });
+  
+      MoviesGenre.belongsTo(models.Genre, {
+        foreignKey: "genreId"
+      })
     }
   };
   MoviesGenre.init({
@@ -20,16 +27,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'MoviesGenre',
   });
-
-  MoviesGenre.associate = function(models) {
-    MoviesGenre.belongsTo(models.Movies, {
-      foreignKey: "moviesId"
-    });
-
-    MoviesGenre.belongsTo(models.Genre, {
-      foreignKey: "genreId"
-    })
-  };
   
   return MoviesGenre
 };
