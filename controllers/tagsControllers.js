@@ -1,6 +1,6 @@
 const { Tags } = require('../models');
 
-class TagssController{
+class TagsController{
 
     static create (req, res, next) {
         let { name } = req.body;
@@ -62,4 +62,4 @@ class TagssController{
     };
 }
 
-module.exports = TagssController;
+module.exports = TagsController;

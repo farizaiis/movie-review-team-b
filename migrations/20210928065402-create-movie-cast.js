@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      moviesId: {
+      MoviesId: {
         type: Sequelize.INTEGER,
         references: {
           model : "Movies",
@@ -17,7 +17,7 @@ module.exports = {
         onUpdate : "CASCADE",
         onDelete : "CASCADE"
       },
-      artistsId: {
+      ArtistsId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Artists",
@@ -37,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('movieCasts');
+    await queryInterface.dropTable('MovieCasts');
   }
 };

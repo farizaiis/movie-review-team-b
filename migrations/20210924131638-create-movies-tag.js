@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      tagsId: {
+      TagsId: {
         type: Sequelize.INTEGER,
         references: {
           model : "Tags",
@@ -17,7 +17,7 @@ module.exports = {
         onUpdate : "CASCADE",
         onDelete : "CASCADE"
       },
-      moviesId: {
+      MoviesId: {
         type: Sequelize.INTEGER,
         references: {
           model : "Movies",

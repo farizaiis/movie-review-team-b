@@ -1,24 +1,24 @@
-const { Genre } = require('../models');
+const { Genres } = require('../models');
 
-class genresController{
+class GenresController{
 
     static create (req, res, next) {
         let { name } = req.body;
 
-        Genre.create({
+        Genres.create({
             name: name
         })
         .then(data => {
-            res.status(201).json({ message: 'genres has been created'});
+            res.status(201).json({ message: 'Genres has been created'});
         })
         .catch(next);
     };
 
     static getAll (req, res, next) {
-        Genre.findAll()
+        Genres.findAll()
         .then(data => {
             res.status(200).json({ 
-                genres: data
+                Genres: data
             })
         })
         .catch(next)
@@ -28,7 +28,7 @@ class genresController{
         let { id } = req.params;
         let { name } = req.body;
 
-        Genre.update({
+        Genres.update({
             name: name
         },{
             where: {
@@ -37,9 +37,9 @@ class genresController{
         })
         .then(data => {
             if (!data) {
-                throw { message: `genres id ${id} is not found `}
+                throw { message: `Genres id ${id} is not found `}
             } else {
-                res.status(200).json({ message: `genres id ${id} has been updated`})
+                res.status(200).json({ message: `Genres id ${id} has been updated`})
             };
         });
     };
@@ -47,19 +47,19 @@ class genresController{
     static delete (req, res, next) {
         let { id } = req.params;
 
-        Genre.destroy({
+        Genres.destroy({
             where : {
                 id: id
             }
         })
         .then(data=> {
             if (!data) {
-                throw { message: `genres id ${id} is not found` }
+                throw { message: `Genres id ${id} is not found` }
             } else {
-                res.status(200).json({ message: `genres ${id} has been deleted`})
+                res.status(200).json({ message: `Genres ${id} has been deleted`})
             };
         });
     };
 }
 
-module.exports = genresController;
+module.exports = GenresController;

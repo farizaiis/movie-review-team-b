@@ -13,28 +13,28 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Movies.belongsToMany(models.Users,
         {
-          through: models.Watchlist,
+          through: models.Watchlists,
           as: "Watch list"
         }
       )
       Movies.belongsToMany(models.Users,
         {
-          through: models.reviews,
+          through: models.Reviews,
           as : "Movie Review"
         }
       )
       Movies.belongsToMany(models.Tags,
         {
-          through: models.MoviesTag,
+          through: models.MoviesTags,
           as: "Movie Tag"
         }
       )
-      Movies.belongsToMany(models.Genre, {
-        through: models.MoviesGenre,
+      Movies.belongsToMany(models.Genres, {
+        through: "MoviesGenres",
         as: "Genre Movie"
       })
       Movies.belongsToMany(models.Artists, {
-        through: models.movieCast,
+        through: models.MovieCasts,
         as: "Movie Cast"
       })
     }

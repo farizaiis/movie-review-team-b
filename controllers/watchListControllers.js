@@ -1,31 +1,31 @@
-const { Watchlist, Users, Movies } =  require('../models')
+const { Watchlists, Users, Movies } =  require('../models')
 
 module.exports = {
     addWachlist: async (req, res) => {
         const {id} = req.params
-        const usersId = req.Users.id
+        const UsersId = req.Users.id
 
         try {
-            const checkMovie = await Watchlist.findOne({ 
+            const checkMovie = await Watchlists.findOne({ 
                 where: {
-                    moviesId: id,
-                    usersId
+                    MoviesId: id,
+                    UsersId
                 }
             });
 
             if (checkMovie) {
                 return res.status(400).json({
                     status: 'failed',
-                    message: 'Already added to watchlist'
+                    message: 'Already added to Watchlists'
                 });
             }
 
-            const watchlistCreate = await Watchlist.create({
-                usersId,
-                moviesId: id
+            const WatchlistsCreate = await Watchlists.create({
+                UsersId,
+                MoviesId: id
             })
 
-            if (!watchlistCreate) {
+            if (!WatchlistsCreate) {
                 return res.status(400).json({
                     status: "failed",
                     message: "cannot add movie to watchlis"
@@ -34,8 +34,8 @@ module.exports = {
 
             res.status(200).json({
                 status: "success",
-                message: "successfully add to list Watchlist",
-                data: watchlistCreate
+                message: "successfully add to list Watchlists",
+                data: WatchlistsCreate
             })
 
         } catch (error) {
@@ -46,12 +46,12 @@ module.exports = {
         }
     },
 
-    getWatchlistbyIdUser: async (req, res) => {
-        const { usersId } = req.params.usersId
+    getWatchlistsbyIdUser: async (req, res) => {
+        const { UsersId } = req.params.UsersId
         try {
             const getById = await Users.findOne({
                 where: {
-                    usersId
+                    UsersId
                 },
                 include: [
                     {
@@ -69,7 +69,7 @@ module.exports = {
 
             return res.status(200).json({
                 status: "success",
-                message: `Success retrieved your watchlist id user ${id}`,
+                message: `Success retrieved your Watchlists id user ${id}`,
                 data: getById
             })
         } catch (error) {
@@ -80,26 +80,26 @@ module.exports = {
         }
     },
 
-    deleteWatchlistById: async (req, res) => {
+    deleteWatchlistsById: async (req, res) => {
         const id = req.params.id
 
         try {
-            const removeWatchlist = await Watchlist.destroy({
+            const removeWatchlists = await Watchlists.destroy({
                 where: {
                     id: id
                 }
             })
 
-            if (!removeWatchlist) {
+            if (!removeWatchlists) {
                 res.status(400).json({
                     status: "failed",
-                    message: `failed delete watchlist id ${id}`
+                    message: `failed delete Watchlists id ${id}`
                 })
             }
 
             res.status(200).json({
                 status: "Success",
-                message: `Success delete watchlist id ${id}`,
+                message: `Success delete Watchlists id ${id}`,
             })
         } catch (error) {
             res.status(500).json({

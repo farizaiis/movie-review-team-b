@@ -1,13 +1,13 @@
-const { MoviesTag, Tags, Movies } = require('../models');
+const { MoviesTags, Tags, Movies } = require('../models');
 
 
-class MoviesTagControllers {
+class MoviesTagsControllers {
     static create (req, res, next) {
-        let { tagsId, moviesId } = req.body;
+        let { TagsId, MoviesId } = req.body;
 
-        MoviesTag.create({
-            moviesId: moviesId,
-            tagsId: tagsId
+        MoviesTags.create({
+            MoviesId: MoviesId,
+            TagsId: TagsId
         })
         .then(data => {
             res.status(201).json({ message: 'movies tags models has been created'})
@@ -21,7 +21,7 @@ class MoviesTagControllers {
         if(!page) {
             page = 1
         }
-        MoviesTag.findAll({
+        MoviesTags.findAll({
             include: [
                 {
                     model: Movies
@@ -33,15 +33,15 @@ class MoviesTagControllers {
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesTag)
+        res.status(200).json(MoviesTags)
     };
 
     static getMoviesByTag(req, res, next) {
-        let { tagsId, page } = req.params;
+        let { TagsId, page } = req.params;
 
-        MoviesTag.findAndCountAll({
+        MoviesTags.findAndCountAll({
             where: { 
-                tagsId: tagsId
+                TagsId: TagsId
             },
             include: [
                 {
@@ -54,15 +54,15 @@ class MoviesTagControllers {
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesTag)
+        res.status(200).json(MoviesTags)
     };
 
     static getTagsByMovie(req, res, next) {
-        let { moviesId } = req.params;
+        let { MoviesId } = req.params;
 
-        MoviesTag.findAll({
+        MoviesTags.findAll({
             where: { 
-                moviesId: moviesId
+                MoviesId: MoviesId
             },
             include: [
                 {
@@ -73,16 +73,16 @@ class MoviesTagControllers {
                 } 
             ],
         });
-        res.status(200).json(MoviesTag)
+        res.status(200).json(MoviesTags)
     };
 
     static update (req, res, next){
         let { id } = req.params;
-        let { moviesId, tagsId } = req.body;
+        let { MoviesId, TagsId } = req.body;
 
-        MoviesTag.update({
-            moviesId: moviesId,
-            tagsId: tagsId
+        MoviesTags.update({
+            MoviesId: MoviesId,
+            TagsId: TagsId
         }, {
             where: {
                 id: id
@@ -92,7 +92,7 @@ class MoviesTagControllers {
             if(!data) {
                     throw { message: `Movies Genres id ${id} has not found`}
                 } else {
-                    res.status(200).json({ message: `Movie id ${moviesId} with Genres id ${id} has been updated`})
+                    res.status(200).json({ message: `Movie id ${MoviesId} with Genres id ${id} has been updated`})
             }
         });
     };
@@ -100,7 +100,7 @@ class MoviesTagControllers {
     static delete (req, res, next) {
         let { id } = req.params;
 
-        MoviesTag.destroy({
+        MoviesTags.destroy({
             where : {
                 id: id
             }
@@ -116,4 +116,4 @@ class MoviesTagControllers {
 
 }
 
-module.exports = MoviesTagControllers;
+module.exports = MoviesTagsControllers;

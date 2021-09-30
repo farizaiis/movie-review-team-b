@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Users.belongsToMany(models.Movies, {
-        through: models.Watchlist,
+        through: models.Watchlists,
         as: 'Watch list'
       });
       Users.belongsToMany(models.Movies, {
-        through: models.reviews,
+        through: models.Reviews,
         as : "User Review"
       });
     }

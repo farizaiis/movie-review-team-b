@@ -1,4 +1,4 @@
-const { reviews, Users, Movies } = require('../models');
+const { Reviews, Users, Movies } = require('../models');
 const Joi = require('joi');
 
 
@@ -20,7 +20,7 @@ module.exports = {
                     errors: error["details"][0]["message"]
                 })
             }
-            const checkUsers = await reviews.findOne({ where: { usersId: Users.id, moviesId: Movies.id } })
+            const checkUsers = await Reviews.findOne({ where: { usersId: Users.id, MoviesId: Movies.id } })
             if (checkUsers) {
                 return res.status(400).json({
                     status: "Failed",
@@ -33,7 +33,7 @@ module.exports = {
                 })
             }
 
-            const newReview = await reviews.create({
+            const newReview = await Reviews.create({
                 comment: body.comment,
                 rating: body.rating
             })
@@ -125,9 +125,9 @@ module.exports = {
 
 
             /* average rating */
-            const avarageRating = await reviews.findAll({
+            const avarageRating = await Reviews.findAll({
                 where: {
-                    moviesId: Movies.id
+                    MoviesId: Movies.id
                 }
             })
 
@@ -144,7 +144,7 @@ module.exports = {
                 rating: realRating,
             }, {
                 where: {
-                    id: newReview.dataValues.moviesId
+                    id: newReview.dataValues.MoviesId
                 }
             })
 
@@ -182,7 +182,7 @@ module.exports = {
     },
     getReviews: async (req, res) => {
         try {
-            const content = await reviews.findAll({
+            const content = await Reviews.findAll({
                 attributes: {
                     exclude: ["id", "updatedAt", "createAt"]
                 },
@@ -219,7 +219,7 @@ module.exports = {
     },
     getReview: async (req, res) => {
         try {
-            const content = await reviews.findOne({
+            const content = await Reviews.findOne({
                 where: {
                     id: req.params.id
                 },
@@ -272,7 +272,7 @@ module.exports = {
                     errors: error["details"][0]["message"]
                 })
             }
-            const updatedReview = await reviews.update({ ...body }, {
+            const updatedReview = await Reviews.update({ ...body }, {
                 where: {
                     id: req.params.id
                 }
@@ -285,7 +285,7 @@ module.exports = {
                 })
             }
 
-            const data = await reviews.findOne({
+            const data = await Reviews.findOne({
                 where: {
                     id: req.params.id,
                 }
@@ -308,7 +308,7 @@ module.exports = {
     deleteReview: async (req, res) => {
         const id = req.params.id
         try {
-            const remove = await reviews.destroy({
+            const remove = await Reviews.destroy({
                 where: {
                     id
                 }
