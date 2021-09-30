@@ -1,11 +1,11 @@
 //const { check } = require('express-validator');
-const { movies } = require('../models')
+const { Movies, MoviesGenres, Genres } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
 const sequelize = require('sequelize')
 
 module.exports = {
-    postMovie : async (req, res) => {            //<---- Register data movies include nge create data nya ke Table
+    postMovie : async (req, res) => {            //<---- Register data Movies include nge create data nya ke Table
         const body = req.body
         try {
             const schema = Joi.object({
@@ -16,12 +16,20 @@ module.exports = {
                 trailer : Joi.string().required(),
                 release_date : Joi.date().format("YYYY-M-D").required(),
                 director : Joi.string().required(),
-                budget : Joi.number().required()
+                budget : Joi.number().required(),
+                featured_song : Joi.string().required()
             })
 
             const check = schema.validate({
-                ...body,
-                poster : req.file.path
+                title : body.title,
+                poster : req.file ? req.file.path : "poster",
+                sinopsys : body.sinopsys,
+                rating : body.rating,
+                trailer : body.trailer,
+                release_date : body.release_date,
+                director : body.director,
+                budget : body.budget,
+                featured_song : body.featured_song
                 }, { abortEarly : false });
 
             if (check.error) {
@@ -32,7 +40,7 @@ module.exports = {
                 })
             }
             
-            const checkmovie = await movies.findOne({
+            const checkmovie = await Movies.findOne({
                 where: {
                     title: body.title
                 }
@@ -45,15 +53,16 @@ module.exports = {
                 });
             }
 
-            const dataMovie = await movies.create({
+            const dataMovie = await Movies.create({
                 title : body.title,
-                poster : req.file.path,
+                [req.file ? "poster" : null]: req.file ? req.file.path : null,
                 sinopsys : body.sinopsys,
                 rating : body.rating,
                 trailer : body.trailer,
                 release_date : body.release_date,
                 director : body.director,
-                budget : body.budget + " USD"
+                budget : body.budget + " USD",
+                featured_song : body.featured_song
             });
 
             return res.status(200).json({
@@ -74,10 +83,10 @@ module.exports = {
     getOneMovie : async (req, res) => {
         const id = req.params.id
         try {
-            const moviesData = await movies.findOne({ where : { id } }); 
+            const MoviesData = await Movies.findOne({ where : { id } }); 
             
             //check jika data admin yang dicari sesuai Id ada nilai nya atau tidak
-            if(!moviesData) {
+            if(!MoviesData) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Data not found"
@@ -86,7 +95,7 @@ module.exports = {
             return res.status(200).json({
                 status : "success",
                 message : "Succesfully retrieved data Movie",
-                data: moviesData
+                data: MoviesData
             });
         } catch (error) {
             return res.status(500).json({
@@ -96,27 +105,27 @@ module.exports = {
         }
     },
 
-    getAllmovies : async (req, res) => {
+    getAllMovies : async (req, res) => {
         const limit = 15;
         const page = parseInt(req.params.page);
         const offset = limit * (page - 1);
 
         try {
-            const moviesData = await movies.findAll({
+            const MoviesData = await Movies.findAll({
                 limit : limit,
                 offset : offset,
                 order : [["createdAt", "DESC"]]
             }); 
             
             //check jika data admin sudah ada nilai/isi nya di table
-            if(!moviesData) {
+            if(!MoviesData) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Data not found"
                 });
             }
 
-            const count = await movies.count({ distinct: true });
+            const count = await Movies.count({ distinct: true });
             let next = page + 1;
             if (page * limit >= count) {
                 next = 0;
@@ -124,8 +133,8 @@ module.exports = {
 
             return res.status(200).json({
                 status : "success",
-                message : "Succesfully retrieved All data movies",
-                data: moviesData,
+                message : "Succesfully retrieved All data Movies",
+                data: MoviesData,
                 meta : {
                     page: page,
                     next: next,
@@ -151,44 +160,54 @@ module.exports = {
                 trailer : Joi.string(),
                 release_date : Joi.date().format("YYYY-M-D"),
                 director : Joi.string(),
-                budget : Joi.number()
+                budget : Joi.number(),
+                featured_song : Joi.string()
             })
 
-            const { error } = schema.validate(
-                {
-                    ...body
-                },
-                { abortEarly : false }
-            )
+            const check = schema.validate({
+                title : body.title,
+                poster : req.file ? req.file.path : "poster",
+                sinopsys : body.sinopsys,
+                trailer : body.trailer,
+                release_date : body.release_date,
+                director : body.director,
+                budget : body.budget,
+                featured_song : body.featured_song
+                }, { abortEarly : false });
 
-            if (error) {
+            if (check.error) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Bad Request",
-                    errors : error["details"].map(({ message }) => message )
+                    errors : check.error["details"].map(({ message }) => message )
                 })
             }
 
             if(body.title) {
-                const checktitle = await movies.findOne({where : {title : body.title}})
+                const checktitle = await Movies.findOne({where : {title : body.title}})
                 if(checktitle) {
                         return res.status(400).json({
                             status : "failed",
-                            message : "Unable to input data"
+                            message : "Title of movie cant duplicate"
                         });
                 }
             }
             
-            const moviesUpdate = await movies.update(
+            const MoviesUpdate = await Movies.update(
                 {
-                    ...body,
+                    title : body.title,
                     [req.file ? "poster" : null]: req.file ? req.file.path : null,
-                    budget : body.budget + " USD"
+                    sinopsys : body.sinopsys,
+                    trailer : body.trailer,
+                    release_date : body.release_date,
+                    director : body.director,
+                    budget : body.budget + " USD",
+                    featured_song : body.featured_song
                 },
                 { where : { id } }
             ); 
 
-            if(!moviesUpdate[0]) {
+            if(!MoviesUpdate[0]) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Unable to input data"
@@ -196,7 +215,7 @@ module.exports = {
             }
 
             //ngambil data yang telah di update supaya muncul datanya di postman
-            const data = await movies.findOne({
+            const data = await Movies.findOne({
                 where : { id }
             })
             
@@ -213,11 +232,11 @@ module.exports = {
         }
     },
 
-    deletemovies : async (req, res) => {
+    deleteMovies : async (req, res) => {
         const id = req.params.id
         try {
-            const moviesData = await movies.destroy({ where : { id } }); 
-            if(!moviesData) {
+            const MoviesData = await Movies.destroy({ where : { id } }); 
+            if(!MoviesData) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Data not found"
@@ -238,7 +257,7 @@ module.exports = {
     searchMovies : async (req, res) => {
         const keywords = req.params.keyword
         try {
-            const datamovie = await movies.findAll({
+            const datamovie = await Movies.findAll({
                 where : {
                     title : {
                         [sequelize.Op.iLike] : "%" + keywords + "%"
@@ -258,5 +277,5 @@ module.exports = {
                 message : "Internal Server Error"
             })
         }
-    }
+    },
 }

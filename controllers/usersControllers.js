@@ -1,27 +1,25 @@
-const { users } = require('../models')
+const { Users } = require('../models')
 require('dotenv').config();
 const Joi = require('joi')
 const jwt = require("../helpers/jwt")
 const bcrypt = require("../helpers/bcrypt")
 
 module.exports = {
-    register : async (req, res) => {            //<---- Register data users include nge create data nya ke Table
+    register : async (req, res) => {            //<---- Register data Users include nge create data nya ke Table
         const body = req.body
         try {
             const schema = Joi.object({
-                role : Joi.string(),
                 fullname : Joi.string().required(),
                 email : Joi.string().required(),
                 password : Joi.string().min(6).max(12).required(),
                 img : Joi.string()
             })
 
-            const check = schema.validate({ 
-                role : body.role,
+            const check = schema.validate({
                 fullname : body.fullname,
                 email : body.email,
                 password : body.password,
-                img : req.file.path
+                img : req.file ? req.file.path : "img"
             }, { abortEarly : false });
 
             if (check.error) {
@@ -32,7 +30,7 @@ module.exports = {
                 })
             }
             //check agar email tidak double
-            const checkemail = await users.findOne({
+            const checkemail = await Users.findOne({
                 where: {
                     email: body.email
                 }
@@ -47,12 +45,11 @@ module.exports = {
 
             const hashedPassword = bcrypt.encrypt(body.password)
 
-            const user = await users.create({
-                role : body.role,
+            const user = await Users.create({
                 fullname : body.fullname,
                 email : body.email,
                 password : hashedPassword,
-                img : req.file.path
+                [req.file ? "img" : null]: req.file ? req.file.path : null
             })
 
             const payload = {
@@ -78,7 +75,7 @@ module.exports = {
         }
     },
 
-    login : async (req, res) => {       //<---- Login data users agar bisa dapet token
+    login : async (req, res) => {       //<---- Login data Users agar bisa dapet token
         const body = req.body
         try {
             const schema = Joi.object({
@@ -96,7 +93,7 @@ module.exports = {
                 })
             }
 
-            const checkemail = await users.findOne({
+            const checkemail = await Users.findOne({
                 where: {
                     email: body.email
                 }
@@ -144,10 +141,10 @@ module.exports = {
     getOneUser : async (req, res) => {
         const id = req.params.id
         try {
-            const usersData = await users.findOne({ where : { id } }); 
+            const UsersData = await Users.findOne({ where : { id } }); 
             
             //check jika data admin yang dicari sesuai Id ada nilai nya atau tidak
-            if(!usersData) {
+            if(!UsersData) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Data not found"
@@ -156,7 +153,7 @@ module.exports = {
             return res.status(200).json({
                 status : "success",
                 message : "Succesfully retrieved data User",
-                data: usersData
+                data: UsersData
             });
         } catch (error) {
             return res.status(500).json({
@@ -168,10 +165,10 @@ module.exports = {
 
     getAllUsers : async (req, res) => {
         try {
-            const usersData = await users.findAll(); 
+            const UsersData = await Users.findAll(); 
             
-            //check jika data admin sudah ada nilai/isi nya di table
-            if(!usersData) {
+            //check jika data user sudah ada nilai/isi nya di table
+            if(!UsersData) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Data not found"
@@ -180,74 +177,7 @@ module.exports = {
             return res.status(200).json({
                 status : "success",
                 message : "Succesfully retrieved data Users",
-                data: usersData
-            });
-        } catch (error) {
-            return res.status(500).json({
-                status : "failed",
-                message : "Internal Server Error"
-            })
-        }
-    },
-
-    updatePassUsers : async (req, res) => {
-        const body = req.body
-        const id = req.params.id
-        try {
-            const schema = Joi.object({         //<-----Validasi inputan di body
-                password : Joi.string()
-            })
-
-            const { error } = schema.validate(
-                {
-                    password : body.password
-                },
-                { abortEarly : false }
-            )
-
-            if (error) {
-                return res.status(400).json({
-                    status : "failed",
-                    message : "Bad Request",
-                    errors : error["details"].map(({ message }) => message )
-                })
-            }
-
-            //enkripsi password yang akan di update
-            const hashedPassword = bcrypt.encrypt(body.password)
-
-            const checkPassword = bcrypt.cekPass(body.password, hashedPassword)
-
-            if(checkPassword) {
-                return res.status(400).json({
-                    status: "fail",
-                    message: "Password already used before, please use new password",
-                });
-            }
-
-            const usersUpdatePass = await users.update(
-                {
-                    password : hashedPassword
-                },
-                { where : { id } }
-            ); 
-
-            if(!usersUpdatePass[0]) {
-                return res.status(400).json({
-                    status : "failed",
-                    message : "Unable to input data"
-                });
-            }
-
-            //ngambil data yang telah di update supaya muncul datanya di postman
-            const data = await users.findOne({
-                where : { id }
-            })
-            
-            return res.status(200).json({
-                status : "success",
-                message : "Succesfully update the password",
-                data : data
+                data: UsersData
             });
         } catch (error) {
             return res.status(500).json({
@@ -264,6 +194,7 @@ module.exports = {
             const schema = Joi.object({            
                 fullname : Joi.string(),
                 email : Joi.string(),
+                password : Joi.string(),
                 img: Joi.string()
             })
 
@@ -271,6 +202,7 @@ module.exports = {
                 {
                     fullname : body.fullname,
                     email : body.email,
+                    password : body.password,
                     img : req.file ? req.file.path : "img"
                 },
                 { abortEarly : false }
@@ -285,7 +217,7 @@ module.exports = {
             }
             
             if(body.email) {
-                const checkemail = await users.findOne({where : { email : body.email }})
+                const checkemail = await Users.findOne({where : { email : body.email }})
                 if(checkemail) {
                     return res.status(400).json({
                         status: "fail",
@@ -293,10 +225,34 @@ module.exports = {
                     });
                 }
             }
+
+            if(body.password) {
+                const checkId = await Users.findOne({
+                    where: {
+                        id : req.params.id
+                    }
+                })
+
+                const checkPassword = bcrypt.cekPass(body.password, checkId.dataValues.password)
+
+                if(checkPassword) {
+                    return res.status(400).json({
+                        status: "fail",
+                        message: "Password already used before, please use new password",
+                    });
+                }
+                
+                const hashedPassword = bcrypt.encrypt(body.password)
+
+                await Users.update({ password : hashedPassword }, { where : { id } }); 
+            }
+
             
-            const userUpdate = await users.update(
+            
+            const userUpdate = await Users.update(
                 {
                     fullname : body.fullname,
+                    email : body.email,
                     [req.file ? "img" : null]: req.file ? req.file.path : null
                 },
                 { where : { id } }
@@ -309,7 +265,7 @@ module.exports = {
                 });
             }
             
-            const data = await users.findOne({
+            const data = await Users.findOne({
                 where : { id }
             })
             
@@ -329,8 +285,8 @@ module.exports = {
     deleteUsers : async (req, res) => {
         const id = req.params.id
         try {
-            const usersData = await users.destroy({ where : { id } }); 
-            if(!usersData) {
+            const UsersData = await Users.destroy({ where : { id } }); 
+            if(!UsersData) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Data not found"

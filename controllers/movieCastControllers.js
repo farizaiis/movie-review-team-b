@@ -1,13 +1,13 @@
-const { MoviesCharacters, Movies, Artist, Genre } = require('../models/indexModels');
+const { MoviesCast, Movies, Artists, Genres } = require('../models');
 
 
-class MoviesCharactersControllers {
+class MoviesCastControllers {
     static create (req, res, next) {
-        let { moviesId, artistId } = req.body;
+        let { MovieId, ArtistId } = req.body;
 
-        MoviesCharacters.create({
-            moviesId: moviesId,
-            charactersId: artistId
+        MoviesCast.create({
+            MovieId: MovieId,
+            ArtistId: ArtistId
         })
         .then(data => {
             res.status(201).json({ message: 'movies characters models has been created'})
@@ -21,65 +21,65 @@ class MoviesCharactersControllers {
         if(!page) {
             page = 1
         }
-        MoviesCharacters.findAll({
+        MoviesCast.findAll({
             include: [
                 {
                     model: Movies
                 },
                 {
-                    model: Artist
+                    model: Artists
                 },
                 {
-                    model: Genre
+                    model: Genres
                 }
             ],
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesCharacters)
+        res.status(200).json(MoviesCast)
     };
     
 
     static getMoviesByCharacters(req, res, next) {
-        let { moviesId, page } = req.params;
+        let { MovieId, page } = req.params;
 
-        MoviesCharacters.findAndCountAll({
+        MoviesCast.findAndCountAll({
             where: { 
-                moviesId: moviesId
+                MovieId: MovieId
             },
             include: [
                 {
                     model: Movies
                 },
                 {
-                    model: Artist
+                    model: Artists
                 },
                 {
-                    model: Genre
+                    model: Genres
                 }
             ],
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesCharacters)
+        res.status(200).json(MoviesCast)
     };
 
     static getCharactersByMovies(req, res, next) {
-        let { artistId } = req.params;
+        let { ArtistId } = req.params;
 
         MoviesTags.findAll({
             where: { 
-                artistId: artistId
+                ArtistId: ArtistId
             },
             include: [
                 {
                     model: Movies
                 },
                 {
-                    model: Artist
+                    model: Artists
                 },
                 {
-                    model: Genre
+                    model: Genres
                 }
             ],
         });
@@ -88,11 +88,11 @@ class MoviesCharactersControllers {
 
     static update (req, res, next){
         let { id } = req.params;
-        let { moviesId, artistId } = req.body;
+        let { MovieId, ArtistId } = req.body;
 
-        MoviesCharacters.update({
-            moviesId: moviesId,
-            artistId: artistId
+        MoviesCast.update({
+            MovieId: MovieId,
+            ArtistId: ArtistId
         }, {
             where: {
                 id: id
@@ -110,7 +110,7 @@ class MoviesCharactersControllers {
     static delete (res, res, next) {
         let { id } = req.params;
 
-        MoviesCharacters.destroy({
+        MoviesCast.destroy({
             where : {
                 id: id
             }
@@ -126,4 +126,4 @@ class MoviesCharactersControllers {
 
 }
 
-module.exports = MoviesCharactersControllers;
+module.exports = MoviesCastControllers;

@@ -1,14 +1,14 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Watchlist', {
+    await queryInterface.createTable('Watchlists', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      moviesId: {
+      MovieId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Movies",
@@ -17,7 +17,7 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE"
       },
-      usersId: {
+      UserId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Users",
@@ -37,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Watchlist');
+    await queryInterface.dropTable('Watchlists');
   }
 };

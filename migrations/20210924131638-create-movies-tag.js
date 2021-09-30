@@ -1,14 +1,14 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('MoviesTag', {
+    await queryInterface.createTable('MoviesTags', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      tagsId: {
+      TagId: {
         type: Sequelize.INTEGER,
         references: {
           model : "Tags",
@@ -17,7 +17,7 @@ module.exports = {
         onUpdate : "CASCADE",
         onDelete : "CASCADE"
       },
-      moviesId: {
+      MovieId: {
         type: Sequelize.INTEGER,
         references: {
           model : "Movies",
@@ -37,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('MoviesTag');
+    await queryInterface.dropTable('MoviesTags');
   }
 };
