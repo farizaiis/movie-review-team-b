@@ -187,78 +187,6 @@ module.exports = {
         }
     },
 
-    updatePassUsers : async (req, res) => {
-        const body = req.body
-        const id = req.params.id
-        try {
-            const schema = Joi.object({
-                password : Joi.string().required()
-            })
-
-            const { error } = schema.validate(
-                {
-                    password : body.password
-                },
-                { abortEarly : false }
-            )
-
-            if (error) {
-                return res.status(400).json({
-                    status : "failed",
-                    message : "Bad Request",
-                    errors : error["details"].map(({ message }) => message )
-                })
-            }
-            
-            const checkId = await Users.findOne({
-                where: {
-                    id : req.params.id
-                }
-            })
-
-            const checkPassword = bcrypt.cekPass(body.password, checkId.dataValues.password)
-
-            if(checkPassword) {
-                return res.status(400).json({
-                    status: "fail",
-                    message: "Password already used before, please use new password",
-                });
-            }
-
-            const hashedPassword = bcrypt.encrypt(body.password)
-
-            const UsersUpdatePass = await Users.update(
-                {
-                    password : hashedPassword
-                },
-                { where : { id } }
-            ); 
-
-            if(!UsersUpdatePass[0]) {
-                return res.status(400).json({
-                    status : "failed",
-                    message : "Unable to input data"
-                });
-            }
-
-            //ngambil data yang telah di update supaya muncul datanya di postman
-            const data = await Users.findOne({
-                where : { id }
-            })
-            
-            return res.status(200).json({
-                status : "success",
-                message : "Succesfully update the password",
-                data : data
-            });
-        } catch (error) {
-            return res.status(500).json({
-                status : "failed",
-                message : "Internal Server Error"
-            })
-        }
-    },
-
     updateDataUsers : async (req, res) => {
         const body = req.body
         const id = req.params.id
@@ -266,6 +194,7 @@ module.exports = {
             const schema = Joi.object({            
                 fullname : Joi.string(),
                 email : Joi.string(),
+                password : Joi.string(),
                 img: Joi.string()
             })
 
@@ -273,6 +202,7 @@ module.exports = {
                 {
                     fullname : body.fullname,
                     email : body.email,
+                    password : body.password,
                     img : req.file ? req.file.path : "img"
                 },
                 { abortEarly : false }
@@ -295,6 +225,29 @@ module.exports = {
                     });
                 }
             }
+
+            if(body.password) {
+                const checkId = await Users.findOne({
+                    where: {
+                        id : req.params.id
+                    }
+                })
+
+                const checkPassword = bcrypt.cekPass(body.password, checkId.dataValues.password)
+
+                if(checkPassword) {
+                    return res.status(400).json({
+                        status: "fail",
+                        message: "Password already used before, please use new password",
+                    });
+                }
+                
+                const hashedPassword = bcrypt.encrypt(body.password)
+
+                await Users.update({ password : hashedPassword }, { where : { id } }); 
+            }
+
+            
             
             const userUpdate = await Users.update(
                 {

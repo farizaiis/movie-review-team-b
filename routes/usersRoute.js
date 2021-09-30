@@ -8,7 +8,6 @@ const uploadAvatar = require('../middlewares/uploadAvatar')
 router.post("/login", users.login) 
 router.post("/register", uploadAvatar("img"), users.register) 
 router.get("/:id", auth, users.getOneUser)
-router.put("/password/:id", auth, author.authUser, users.updatePassUsers)
 router.put("/data/:id", auth, author.authUser, uploadAvatar("img"), users.updateDataUsers)
 router.delete("/delete/:id", auth, author.authUser, users.deleteUsers)
 
