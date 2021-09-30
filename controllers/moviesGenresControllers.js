@@ -1,91 +1,88 @@
-const { movies } = require('../models')
-const { genres } = require('../models')
-const { moviesgenres } = require('../models');
+const { Movies, Genre, MoviesGenre} = require('../models')
 
 
-
-class moviesgenresControllers {
+class MoviesGenreControllers {
     static create (req, res, next) {
-        let { moviesId, genresId } = req.body;
+        let { moviesId, genreId } = req.body;
 
-        moviesgenres.create({
+        MoviesGenre.create({
             moviesId: moviesId,
-            genresId: genresId
+            genreId: genreId
         })
         .then(data => {
-            res.status(201).json({ message: 'movies genres models has been created'})
+            res.status(201).json({ message: 'Movies Genre models has been created'})
         })
         .catch(next);
     };
 
-    static getAllMoviesBygenres(req, res, next) {
+    static getAllMoviesByGenre(req, res, next) {
         let { page } = req.params;
 
         if(!page) {
             page = 1
         }
-        moviesgenres.findAll({
+        MoviesGenre.findAll({
             include: [
                 {
-                    model: movies
+                    model: Movies
                 },
                 {
-                    model: genres
+                    model: Genre
                 }
             ],
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(moviesgenres)
+        res.status(200).json(MoviesGenre)
     };
 
-    static getMoviesBygenres(req, res, next) {
-        let { genresId, page } = req.params;
+    static getMoviesByGenre(req, res, next) {
+        let { genreId, page } = req.params;
 
-        moviesgenres.findAndCountAll({
+        MoviesGenre.findAndCountAll({
             where: { 
-                genresId: genresId
+                genreId: genreId
             },
             include: [
                 {
-                    model: movies
+                    model: Movies
                 },
                 {
-                    model: genres
+                    model: Genre
                 } 
             ],
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(moviesgenres)
+        res.status(200).json(MoviesGenre)
     };
 
-    static getgenresByMovie(req, res, next) {
+    static getGenreByMovie(req, res, next) {
         let { moviesId } = req.params;
 
-        moviesgenres.findAll({
+        MoviesGenre.findAll({
             where: { 
                 moviesId: moviesId
             },
             include: [
                 {
-                    model: movies
+                    model: Movies
                 },
                 {
-                    model: genres
+                    model: Genre
                 } 
             ],
         });
-        res.status(200).json(movie)
+        res.status(200).json(MoviesGenre)
     }; 
 
     static update (req, res, next){
         let { id } = req.params;
-        let { moviesId, genresId } = req.body;
+        let { moviesId, genreId } = req.body;
 
-        moviesgenres.update({
+        MoviesGenre.update({
             moviesId: moviesId,
-            genresId: genresId
+            genreId: genreId
         }, {
             where: {
                 id: id
@@ -93,9 +90,9 @@ class moviesgenresControllers {
         })
         .then(data => {
             if(!data) {
-                    throw { message: `Movies genress id ${id} has not found`}
+                    throw { message: `Movies Genres id ${id} has not found`}
                 } else {
-                    res.status(200).json({ message: `Movie id ${moviesId} with genress id ${id} has been updated`})
+                    res.status(200).json({ message: `Movie id ${moviesId} with Genres id ${id} has been updated`})
             }
         });
     };
@@ -103,20 +100,20 @@ class moviesgenresControllers {
     static delete (req, res, next) {
         let { id } = req.params;
 
-        moviesgenres.destroy({
+        MoviesGenre.destroy({
             where : {
                 id: id
             }
         })
         .then(data => {
             if(!data) {
-                throw { message: `Movies genress id ${id} has not found`}
+                throw { message: `Movies Genres id ${id} has not found`}
             } else {
-                res.status(200).json({ message: `Movies genress id ${id} has been deleted`})
+                res.status(200).json({ message: `Movies Genres id ${id} has been deleted`})
             };
         });
     };
 
 }
 
-module.exports = moviesgenresControllers;
+module.exports = MoviesGenreControllers;

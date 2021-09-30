@@ -1,7 +1,5 @@
-const { review, users } = require('../models');
+const { reviews, Users, Movies } = require('../models');
 const Joi = require('joi');
-// const index = require('../models/index')
-const movies = require('../models/movies');
 
 
 module.exports = {
@@ -10,7 +8,7 @@ module.exports = {
         try {
             const schema = Joi.object({
                 comment: Joi.string(),
-                rating: Joi.number().min(1).max(10).required(),
+                rating: Joi.number().min(1).max(5).required(),
             });
 
             const { error } = schema.validate({ ...body }, { abortEarly: false });
@@ -22,7 +20,7 @@ module.exports = {
                     errors: error["details"][0]["message"]
                 })
             }
-            const checkUsers = await review.findOne({ where: { usersId: users.id, moviesId: movies.id } })
+            const checkUsers = await reviews.findOne({ where: { usersId: Users.id, moviesId: Movies.id } })
             if (checkUsers) {
                 return res.status(400).json({
                     status: "Failed",
@@ -35,7 +33,7 @@ module.exports = {
                 })
             }
 
-            const newReview = await review.create({
+            const newReview = await reviews.create({
                 comment: body.comment,
                 rating: body.rating
             })
@@ -127,9 +125,9 @@ module.exports = {
 
 
             /* average rating */
-            const avarageRating = await review.findAll({
+            const avarageRating = await reviews.findAll({
                 where: {
-                    moviesId: movies.id
+                    moviesId: Movies.id
                 }
             })
 
@@ -141,15 +139,14 @@ module.exports = {
             const sum = average.reduce((a, b) => a + b)
             const realRating = Math.round(sum / average.length)
 
-            const updateMovies = await Movie.update({
+            const updateMovies = await Movies.update({
                 ...body,
                 rating: realRating,
             }, {
                 where: {
-                    id: moviesId
+                    id: newReview.dataValues.moviesId
                 }
             })
-
 
             if (!updateMovies[0]) {
                 transaction.rollback()
@@ -185,15 +182,15 @@ module.exports = {
     },
     getReviews: async (req, res) => {
         try {
-            const content = await review.findAll({
+            const content = await reviews.findAll({
                 attributes: {
                     exclude: ["id", "updatedAt", "createAt"]
                 },
                 include: [
                     {
                         as: "user",
-                        model: users,
-                        attributes: ['fullName', 'profilePictures']
+                        model: Users,
+                        attributes: ['fullname', 'img']
                     },
                 ],
                 offset: (15 * (page - 1)) + 1,
@@ -222,7 +219,7 @@ module.exports = {
     },
     getReview: async (req, res) => {
         try {
-            const content = await review.findOne({
+            const content = await reviews.findOne({
                 where: {
                     id: req.params.id
                 },
@@ -232,8 +229,8 @@ module.exports = {
                 include: [
                     {
                         as: "user",
-                        model: users,
-                        attributes: ['fullName', 'profilePictures']
+                        model: Users,
+                        attributes: ['fullname', 'img']
                     },
                 ],
             })
@@ -263,7 +260,7 @@ module.exports = {
         try {
             const schema = Joi.object({
                 comment: Joi.string().required(),
-                rating: Joi.integer().required(),
+                rating: Joi.number().required(),
             });
 
             const { error } = schema.validate({ ...body }, { abortEarly: false });
@@ -275,7 +272,7 @@ module.exports = {
                     errors: error["details"][0]["message"]
                 })
             }
-            const updatedReview = await review.update({ ...body }, {
+            const updatedReview = await reviews.update({ ...body }, {
                 where: {
                     id: req.params.id
                 }
@@ -288,7 +285,7 @@ module.exports = {
                 })
             }
 
-            const data = await review.findOne({
+            const data = await reviews.findOne({
                 where: {
                     id: req.params.id,
                 }
@@ -311,7 +308,7 @@ module.exports = {
     deleteReview: async (req, res) => {
         const id = req.params.id
         try {
-            const remove = await review.destroy({
+            const remove = await reviews.destroy({
                 where: {
                     id
                 }

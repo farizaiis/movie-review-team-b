@@ -1,11 +1,11 @@
-const { MoviesCharacters, Movies, Artist, Genre } = require('../models');
+const { movieCast, Movies, Artist, Genre } = require('../models');
 
 
-class MoviesCharactersControllers {
+class movieCastControllers {
     static create (req, res, next) {
         let { moviesId, artistId } = req.body;
 
-        MoviesCharacters.create({
+        movieCast.create({
             moviesId: moviesId,
             charactersId: artistId
         })
@@ -21,7 +21,7 @@ class MoviesCharactersControllers {
         if(!page) {
             page = 1
         }
-        MoviesCharacters.findAll({
+        movieCast.findAll({
             include: [
                 {
                     model: Movies
@@ -36,14 +36,14 @@ class MoviesCharactersControllers {
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesCharacters)
+        res.status(200).json(movieCast)
     };
     
 
     static getMoviesByCharacters(req, res, next) {
         let { moviesId, page } = req.params;
 
-        MoviesCharacters.findAndCountAll({
+        movieCast.findAndCountAll({
             where: { 
                 moviesId: moviesId
             },
@@ -61,7 +61,7 @@ class MoviesCharactersControllers {
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesCharacters)
+        res.status(200).json(movieCast)
     };
 
     static getCharactersByMovies(req, res, next) {
@@ -90,7 +90,7 @@ class MoviesCharactersControllers {
         let { id } = req.params;
         let { moviesId, artistId } = req.body;
 
-        MoviesCharacters.update({
+        movieCast.update({
             moviesId: moviesId,
             artistId: artistId
         }, {
@@ -110,7 +110,7 @@ class MoviesCharactersControllers {
     static delete (res, res, next) {
         let { id } = req.params;
 
-        MoviesCharacters.destroy({
+        movieCast.destroy({
             where : {
                 id: id
             }
@@ -126,4 +126,4 @@ class MoviesCharactersControllers {
 
 }
 
-module.exports = MoviesCharactersControllers;
+module.exports = movieCastControllers;

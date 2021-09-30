@@ -3,13 +3,13 @@ const { Watchlist, Users, Movies } =  require('../models')
 module.exports = {
     addWachlist: async (req, res) => {
         const {id} = req.params
-        const userId = req.Users.id
+        const usersId = req.Users.id
 
         try {
             const checkMovie = await Watchlist.findOne({ 
                 where: {
-                    movieId: id,
-                    userId
+                    moviesId: id,
+                    usersId
                 }
             });
 
@@ -21,8 +21,8 @@ module.exports = {
             }
 
             const watchlistCreate = await Watchlist.create({
-                userId,
-                movieId: id
+                usersId,
+                moviesId: id
             })
 
             if (!watchlistCreate) {
@@ -47,11 +47,11 @@ module.exports = {
     },
 
     getWatchlistbyIdUser: async (req, res) => {
-        const { userId } = req.params.userId
+        const { usersId } = req.params.usersId
         try {
             const getById = await Users.findOne({
                 where: {
-                    userId
+                    usersId
                 },
                 include: [
                     {
