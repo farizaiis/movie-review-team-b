@@ -1,5 +1,5 @@
 //const { check } = require('express-validator');
-const { Movies, MoviesGenres, Genres } = require('../models')
+const { Movies } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
 const sequelize = require('sequelize')
