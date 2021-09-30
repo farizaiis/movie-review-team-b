@@ -3,11 +3,11 @@ const { MoviesCast, Movies, Artists, Genres } = require('../models');
 
 class MoviesCastControllers {
     static create (req, res, next) {
-        let { MoviesId, ArtistsId } = req.body;
+        let { MovieId, ArtistId } = req.body;
 
         MoviesCast.create({
-            MoviesId: MoviesId,
-            ArtistsId: ArtistsId
+            MovieId: MovieId,
+            ArtistId: ArtistId
         })
         .then(data => {
             res.status(201).json({ message: 'movies characters models has been created'})
@@ -41,11 +41,11 @@ class MoviesCastControllers {
     
 
     static getMoviesByCharacters(req, res, next) {
-        let { MoviesId, page } = req.params;
+        let { MovieId, page } = req.params;
 
         MoviesCast.findAndCountAll({
             where: { 
-                MoviesId: MoviesId
+                MovieId: MovieId
             },
             include: [
                 {
@@ -65,11 +65,11 @@ class MoviesCastControllers {
     };
 
     static getCharactersByMovies(req, res, next) {
-        let { ArtistsId } = req.params;
+        let { ArtistId } = req.params;
 
         MoviesTags.findAll({
             where: { 
-                ArtistsId: ArtistsId
+                ArtistId: ArtistId
             },
             include: [
                 {
@@ -88,11 +88,11 @@ class MoviesCastControllers {
 
     static update (req, res, next){
         let { id } = req.params;
-        let { MoviesId, ArtistsId } = req.body;
+        let { MovieId, ArtistId } = req.body;
 
         MoviesCast.update({
-            MoviesId: MoviesId,
-            ArtistsId: ArtistsId
+            MovieId: MovieId,
+            ArtistId: ArtistId
         }, {
             where: {
                 id: id

@@ -3,11 +3,11 @@ const { Movies, Genres, MoviesGenres} = require('../models')
 
 class MoviesGenresControllers {
     static create (req, res, next) {
-        let { MoviesId, GenresId } = req.body;
+        let { MovieId, GenreId } = req.body;
 
         MoviesGenres.create({
-            MoviesId: MoviesId,
-            GenresId: GenresId
+            MovieId: MovieId,
+            GenreId: GenreId
         })
         .then(data => {
             res.status(201).json({ message: 'Movies Genres models has been created'})
@@ -37,11 +37,11 @@ class MoviesGenresControllers {
     };
 
     static getMoviesByGenres(req, res, next) {
-        let { GenresId, page } = req.params;
+        let { GenreId, page } = req.params;
 
         MoviesGenres.findAndCountAll({
             where: { 
-                GenresId: GenresId
+                GenreId: GenreId
             },
             include: [
                 {
@@ -58,11 +58,11 @@ class MoviesGenresControllers {
     };
 
     static getGenresByMovie(req, res, next) {
-        let { MoviesId } = req.params;
+        let { MovieId } = req.params;
 
         MoviesGenres.findAll({
             where: { 
-                MoviesId: MoviesId
+                MovieId: MovieId
             },
             include: [
                 {
@@ -78,11 +78,11 @@ class MoviesGenresControllers {
 
     static update (req, res, next){
         let { id } = req.params;
-        let { MoviesId, GenresId } = req.body;
+        let { MovieId, GenreId } = req.body;
 
         MoviesGenres.update({
-            MoviesId: MoviesId,
-            GenresId: GenresId
+            MovieId: MovieId,
+            GenreId: GenreId
         }, {
             where: {
                 id: id
@@ -92,7 +92,7 @@ class MoviesGenresControllers {
             if(!data) {
                     throw { message: `Movies Genress id ${id} has not found`}
                 } else {
-                    res.status(200).json({ message: `Movie id ${MoviesId} with Genress id ${id} has been updated`})
+                    res.status(200).json({ message: `Movie id ${MovieId} with Genress id ${id} has been updated`})
             }
         });
     };

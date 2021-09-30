@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      MoviesId: {
+      MovieId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Movies",
@@ -17,7 +17,7 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE"
       },
-      UsersId: {
+      UserId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Users",

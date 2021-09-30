@@ -12,18 +12,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
         MoviesTags.belongsTo(models.Movies, {
-          foreignKey: "MoviesId"
+          foreignKey: "MovieId"
         });
     
         MoviesTags.belongsTo(models.Tags, {
-          foreignKey: "TagsId"
+          foreignKey: "TagId"
         });
     };
   }
 
   MoviesTags.init({
-    TagsId: DataTypes.INTEGER,
-    MoviesId: DataTypes.INTEGER
+    TagId: DataTypes.INTEGER,
+    MovieId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'MoviesTags',

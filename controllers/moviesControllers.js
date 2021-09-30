@@ -1,5 +1,5 @@
 //const { check } = require('express-validator');
-const { Movies } = require('../models')
+const { Movies, MoviesGenres, Genres } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
 const sequelize = require('sequelize')
@@ -277,5 +277,5 @@ module.exports = {
                 message : "Internal Server Error"
             })
         }
-    }
+    },
 }

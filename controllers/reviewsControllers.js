@@ -20,7 +20,7 @@ module.exports = {
                     errors: error["details"][0]["message"]
                 })
             }
-            const checkUsers = await Reviews.findOne({ where: { usersId: Users.id, MoviesId: Movies.id } })
+            const checkUsers = await Reviews.findOne({ where: { UserId: Users.id, MovieId: Movies.id } })
             if (checkUsers) {
                 return res.status(400).json({
                     status: "Failed",
@@ -127,7 +127,7 @@ module.exports = {
             /* average rating */
             const avarageRating = await Reviews.findAll({
                 where: {
-                    MoviesId: Movies.id
+                    MovieId: Movies.id
                 }
             })
 
@@ -144,7 +144,7 @@ module.exports = {
                 rating: realRating,
             }, {
                 where: {
-                    id: newReview.dataValues.MoviesId
+                    id: newReview.dataValues.MovieId
                 }
             })
 

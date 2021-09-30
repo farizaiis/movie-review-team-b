@@ -3,11 +3,11 @@ const { MoviesTags, Tags, Movies } = require('../models');
 
 class MoviesTagsControllers {
     static create (req, res, next) {
-        let { TagsId, MoviesId } = req.body;
+        let { TagId, MovieId } = req.body;
 
         MoviesTags.create({
-            MoviesId: MoviesId,
-            TagsId: TagsId
+            MovieId: MovieId,
+            TagId: TagId
         })
         .then(data => {
             res.status(201).json({ message: 'movies tags models has been created'})
@@ -37,11 +37,11 @@ class MoviesTagsControllers {
     };
 
     static getMoviesByTag(req, res, next) {
-        let { TagsId, page } = req.params;
+        let { TagId, page } = req.params;
 
         MoviesTags.findAndCountAll({
             where: { 
-                TagsId: TagsId
+                TagId: TagId
             },
             include: [
                 {
@@ -58,11 +58,11 @@ class MoviesTagsControllers {
     };
 
     static getTagsByMovie(req, res, next) {
-        let { MoviesId } = req.params;
+        let { MovieId } = req.params;
 
         MoviesTags.findAll({
             where: { 
-                MoviesId: MoviesId
+                MovieId: MovieId
             },
             include: [
                 {
@@ -78,11 +78,11 @@ class MoviesTagsControllers {
 
     static update (req, res, next){
         let { id } = req.params;
-        let { MoviesId, TagsId } = req.body;
+        let { MovieId, TagId } = req.body;
 
         MoviesTags.update({
-            MoviesId: MoviesId,
-            TagsId: TagsId
+            MovieId: MovieId,
+            TagId: TagId
         }, {
             where: {
                 id: id
@@ -92,7 +92,7 @@ class MoviesTagsControllers {
             if(!data) {
                     throw { message: `Movies Genres id ${id} has not found`}
                 } else {
-                    res.status(200).json({ message: `Movie id ${MoviesId} with Genres id ${id} has been updated`})
+                    res.status(200).json({ message: `Movie id ${MovieId} with Genres id ${id} has been updated`})
             }
         });
     };
