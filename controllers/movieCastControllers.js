@@ -1,11 +1,11 @@
-const { MovieCasts, Movies, Artists, Genres } = require('../models');
+const { MoviesCast, Movies, Artists, Genres } = require('../models');
 
 
-class MovieCastsControllers {
+class MoviesCastControllers {
     static create (req, res, next) {
         let { MoviesId, ArtistsId } = req.body;
 
-        MovieCasts.create({
+        MoviesCast.create({
             MoviesId: MoviesId,
             ArtistsId: ArtistsId
         })
@@ -21,7 +21,7 @@ class MovieCastsControllers {
         if(!page) {
             page = 1
         }
-        MovieCasts.findAll({
+        MoviesCast.findAll({
             include: [
                 {
                     model: Movies
@@ -36,14 +36,14 @@ class MovieCastsControllers {
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MovieCasts)
+        res.status(200).json(MoviesCast)
     };
     
 
     static getMoviesByCharacters(req, res, next) {
         let { MoviesId, page } = req.params;
 
-        MovieCasts.findAndCountAll({
+        MoviesCast.findAndCountAll({
             where: { 
                 MoviesId: MoviesId
             },
@@ -61,7 +61,7 @@ class MovieCastsControllers {
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MovieCasts)
+        res.status(200).json(MoviesCast)
     };
 
     static getCharactersByMovies(req, res, next) {
@@ -90,7 +90,7 @@ class MovieCastsControllers {
         let { id } = req.params;
         let { MoviesId, ArtistsId } = req.body;
 
-        MovieCasts.update({
+        MoviesCast.update({
             MoviesId: MoviesId,
             ArtistsId: ArtistsId
         }, {
@@ -110,7 +110,7 @@ class MovieCastsControllers {
     static delete (res, res, next) {
         let { id } = req.params;
 
-        MovieCasts.destroy({
+        MoviesCast.destroy({
             where : {
                 id: id
             }
@@ -126,4 +126,4 @@ class MovieCastsControllers {
 
 }
 
-module.exports = MovieCastsControllers;
+module.exports = MoviesCastControllers;
