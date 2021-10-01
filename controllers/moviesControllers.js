@@ -1,11 +1,11 @@
 //const { check } = require('express-validator');
-const { Movies, MoviesGenres, Genres } = require('../models')
+const { Movies, Genres, MoviesGenres } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
 const sequelize = require('sequelize')
 
 module.exports = {
-    postMovie : async (req, res) => {            //<---- Register data Movies include nge create data nya ke Table
+    postMovie : async (req, res) => {
         const body = req.body
         try {
             const schema = Joi.object({
@@ -85,7 +85,6 @@ module.exports = {
         try {
             const MoviesData = await Movies.findOne({ where : { id } }); 
             
-            //check jika data admin yang dicari sesuai Id ada nilai nya atau tidak
             if(!MoviesData) {
                 return res.status(400).json({
                     status : "failed",
@@ -111,13 +110,16 @@ module.exports = {
         const offset = limit * (page - 1);
 
         try {
+            // if(!page){
+            //     page = 1
+            // }
+
             const MoviesData = await Movies.findAll({
                 limit : limit,
                 offset : offset,
                 order : [["createdAt", "DESC"]]
             }); 
             
-            //check jika data admin sudah ada nilai/isi nya di table
             if(!MoviesData) {
                 return res.status(400).json({
                     status : "failed",
@@ -130,6 +132,57 @@ module.exports = {
             if (page * limit >= count) {
                 next = 0;
             }
+
+            return res.status(200).json({
+                status : "success",
+                message : "Succesfully retrieved All data Movies",
+                data: MoviesData,
+                meta : {
+                    page: page,
+                    next: next,
+                    total: count
+                }
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
+    getAllMoviesByGenre : async (req, res) => {
+        const limit = 15;
+        const page = parseInt(req.params.page);
+        const offset = limit * (page - 1);
+        const names = req.params.name
+
+        try {
+            const MoviesData = await Genres.findOne({
+                where : { name : names } ,
+                attributes : {exclude : ["id", "createdAt", "updatedAt"]},
+                include : [{
+                    model : Movies,
+                    as : "moviesgenre",
+                    attributes : {exclude : ["id", "createdAt", "updatedAt"]}
+                }],
+                limit : limit,
+                offset : offset,
+                order : [["createdAt", "DESC"]]
+            }); 
+            
+            if(!MoviesData) {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Data not found"
+                });
+            }
+
+            // const count = await Movies.count({ distinct: true });
+            // let next = page + 1;
+            // if (page * limit >= count) {
+            //     next = 0;
+            // }
 
             return res.status(200).json({
                 status : "success",
@@ -214,7 +267,6 @@ module.exports = {
                 });
             }
 
-            //ngambil data yang telah di update supaya muncul datanya di postman
             const data = await Movies.findOne({
                 where : { id }
             })
@@ -254,16 +306,16 @@ module.exports = {
         }
     },
 
-    searchMovies : async (req, res) => {
-        const keywords = req.params.keyword
+    searchMoviesbyTitle : async (req, res) => {
+        const titles = req.params.title
         try {
             const datamovie = await Movies.findAll({
                 where : {
                     title : {
-                        [sequelize.Op.iLike] : "%" + keywords + "%"
+                        [sequelize.Op.iLike] : "%" + titles + "%"
                     } 
                 },
-                limit : 10
+                limit : 15
             })
 
             return res.status(200).json({

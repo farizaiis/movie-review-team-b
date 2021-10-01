@@ -5,7 +5,7 @@ const jwt = require("../helpers/jwt")
 const bcrypt = require("../helpers/bcrypt")
 
 module.exports = {
-    register : async (req, res) => {            //<---- Register data Users include nge create data nya ke Table
+    register : async (req, res) => {
         const body = req.body
         try {
             const schema = Joi.object({
@@ -75,7 +75,7 @@ module.exports = {
         }
     },
 
-    login : async (req, res) => {       //<---- Login data Users agar bisa dapet token
+    login : async (req, res) => {
         const body = req.body
         try {
             const schema = Joi.object({
@@ -143,13 +143,20 @@ module.exports = {
         try {
             const UsersData = await Users.findOne({ where : { id } }); 
             
-            //check jika data admin yang dicari sesuai Id ada nilai nya atau tidak
             if(!UsersData) {
                 return res.status(400).json({
                     status : "failed",
                     message : "Data not found"
                 });
             }
+
+            if(UsersData.dataValues.role == "admin") {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Cannot access the Data"
+                })
+            }
+
             return res.status(200).json({
                 status : "success",
                 message : "Succesfully retrieved data User",
@@ -215,6 +222,17 @@ module.exports = {
                     errors : error["details"].map(({ message }) => message )
                 })
             }
+
+            const checkrole = await Users.findOne({
+                where : { id }
+            })
+
+            if(checkrole.dataValues.role == "admin"){
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Cannot update Data Admin"
+                })
+            }
             
             if(body.email) {
                 const checkemail = await Users.findOne({where : { email : body.email }})
@@ -247,8 +265,6 @@ module.exports = {
                 await Users.update({ password : hashedPassword }, { where : { id } }); 
             }
 
-            
-            
             const userUpdate = await Users.update(
                 {
                     fullname : body.fullname,
