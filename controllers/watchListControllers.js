@@ -1,17 +1,17 @@
 const { Watchlists, Users, Movies } =  require('../models')
 
 module.exports = {
-    addWachlist: async (req, res) => {
-        const {id} = req.params
-        const UserId = req.Users.id
+    addWachlist: async (req, res) => {  //nanti lanjut biar adem
+        const UserId = req.users.id
+        const body = req.body
 
         try {
-            const checkMovie = await Watchlists.findOne({ 
+            const checkMovie = await Watchlists.findOne({
                 where: {
-                    MovieId: id,
+                    MovieId: body.MovieId,
                     UserId
                 }
-            });
+            })
 
             if (checkMovie) {
                 return res.status(400).json({
@@ -20,12 +20,12 @@ module.exports = {
                 });
             }
 
-            const WatchlistsCreate = await Watchlists.create({
-                UserId,
-                MovieId: id
+            const watchlistsCreate = await Watchlists.create({
+                UserId: UserId,
+                MovieId: body.MovieId
             })
 
-            if (!WatchlistsCreate) {
+            if (!watchlistsCreate) {
                 return res.status(400).json({
                     status: "failed",
                     message: "cannot add movie to watchlis"
@@ -35,7 +35,7 @@ module.exports = {
             res.status(200).json({
                 status: "success",
                 message: "successfully add to list Watchlists",
-                data: WatchlistsCreate
+                data: watchlistsCreate
             })
 
         } catch (error) {
@@ -46,47 +46,65 @@ module.exports = {
         }
     },
 
-    getWatchlistsbyIdUser: async (req, res) => {
-        const { UserId } = req.params.UserId
+    getById: async (req, res) => {
+        const id = req.params.id
+
         try {
             const getById = await Users.findOne({
                 where: {
-                    UserId
+                    id: id
                 },
-                include: [
-                    {
-                        model: Movies
-                    }
-                ]
+                attributes: {
+                    exclude: [
+                        "id",
+                        "createAt",
+                        "updateAt"
+                    ]
+                },
+                include: {
+                    model: Movies,
+                    as: "watchlists",
+                    exclude: [
+                        "id",
+                        "createAt",
+                        "updateAt"
+                    ]
+                }
             })
-
-            if (!getById) {
-                return res.status(400).json({
-                    status: "failed",
-                    message: `id ${id} cannot found`
-                })
-            }
-
             return res.status(200).json({
                 status: "success",
-                message: `Success retrieved your Watchlists id user ${id}`,
+                message: `"success get data watchlist by id ${id}"`,
                 data: getById
             })
         } catch (error) {
-            return res.status(500).json({
+            res.status(500).json({
                 status: "failed",
-                message: "Internal Server Error"
+                message: "internal server error"
             })
         }
     },
 
     deleteWatchlistsById: async (req, res) => {
-        const id = req.params.id
-
+        const UserId = req.users.id
+        const {id} = req.params
+        
         try {
+            const checkMovie = await Watchlists.findOne({
+                where: {
+                    id
+                }
+            })
+
+            if (checkMovie.dataValues.UserId != UserId) {
+                return res.status(400).json({
+                    status: 'failed',
+                    message: "cannot delete anthor user watchlist"
+                });
+            }
+
             const removeWatchlists = await Watchlists.destroy({
                 where: {
-                    id: id
+                    id
                 }
             })
 
