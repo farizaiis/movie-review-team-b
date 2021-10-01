@@ -5,7 +5,7 @@ const jwt = require("../helpers/jwt")
 const bcrypt = require("../helpers/bcrypt")
 
 module.exports = {
-    register : async (req, res) => {            //<---- Register data Users include nge create data nya ke Table
+    register : async (req, res) => {
         const body = req.body
         try {
             const schema = Joi.object({
@@ -75,7 +75,7 @@ module.exports = {
         }
     },
 
-    login : async (req, res) => {       //<---- Login data Users agar bisa dapet token
+    login : async (req, res) => {
         const body = req.body
         try {
             const schema = Joi.object({
@@ -115,8 +115,6 @@ module.exports = {
                 })
             }
 
-            if(req.users.id     )
-
             const payload = {
                 role : checkemail.dataValues.role,
                 email : checkemail.dataValues.email,
@@ -145,7 +143,6 @@ module.exports = {
         try {
             const UsersData = await Users.findOne({ where : { id } }); 
             
-            //check jika data admin yang dicari sesuai Id ada nilai nya atau tidak
             if(!UsersData) {
                 return res.status(400).json({
                     status : "failed",

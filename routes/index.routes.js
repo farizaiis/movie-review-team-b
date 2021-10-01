@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const artistRouter = require('./artist.routes')
-const watchlistRouter = require('./watchlists.routes')
+// const watchlistRouter = require('./watchlists.routes')
 const usersRouter = require('./usersRoute')
 const adminRouter = require('./adminRoute')
 const moviesRouter = require('./moviesRoute')
