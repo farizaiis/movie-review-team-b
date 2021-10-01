@@ -330,4 +330,29 @@ module.exports = {
             })
         }
     },
+
+    searchMoviesbyGenre : async (req, res) => {
+        const  = req.params.title
+        try {
+            const datamovie = await Movies.findAll({
+                where : {
+                    title : {
+                        [sequelize.Op.iLike] : "%" + titles + "%"
+                    } 
+                },
+                limit : 15
+            })
+
+            return res.status(200).json({
+                status : "success",
+                messsage : "Successfully retrieve data movie",
+                result : datamovie
+            })
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
 }
