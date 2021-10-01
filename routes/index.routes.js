@@ -12,7 +12,7 @@ const moviesTags = require('./moviesTags')
 const rating = require('./ratingRoutes');
 
 router.use('/v1/artists', artistRouter)
-router.use('v1/watchlis', watchlistRouter)
+router.use('/v1/watchlist', watchlistRouter)
 router.use('/v1/users', usersRouter)
 router.use('/v1/admin', adminRouter)
 router.use('/v1/movies', moviesRouter)

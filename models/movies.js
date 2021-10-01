@@ -14,13 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       Movies.belongsToMany(models.Users,
         {
           through: models.Watchlists,
-          as: "Watch list"
+          as: "Watch lists"
         }
       )
       Movies.belongsToMany(models.Users,
         {
           through: models.Reviews,
-          as : "Movie Review"
+          as : "Movie Reviews"
         }
       )
       Movies.belongsToMany(models.Tags,
@@ -31,11 +31,11 @@ module.exports = (sequelize, DataTypes) => {
       )
       Movies.belongsToMany(models.Genres, {
         through: models.MoviesGenres,
-        as: "Genre Movie"
+        as: "Genre Movies"
       })
       Movies.belongsToMany(models.Artists, {
         through: models.MoviesCasts,
-        as: "Movie Cast"
+        as: "Movie Casts"
       })
     }
   };

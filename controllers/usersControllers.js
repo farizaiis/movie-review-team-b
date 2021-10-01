@@ -115,6 +115,8 @@ module.exports = {
                 })
             }
 
+            if(req.users.id     )
+
             const payload = {
                 role : checkemail.dataValues.role,
                 email : checkemail.dataValues.email,
@@ -150,6 +152,14 @@ module.exports = {
                     message : "Data not found"
                 });
             }
+
+            if(UsersData.dataValues.role == "admin") {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Cannot access the Data"
+                })
+            }
+
             return res.status(200).json({
                 status : "success",
                 message : "Succesfully retrieved data User",
@@ -215,6 +225,17 @@ module.exports = {
                     errors : error["details"].map(({ message }) => message )
                 })
             }
+
+            const checkrole = await Users.findOne({
+                where : { id }
+            })
+
+            if(checkrole.dataValues.role == "admin"){
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Cannot update Data Admin"
+                })
+            }
             
             if(body.email) {
                 const checkemail = await Users.findOne({where : { email : body.email }})
@@ -247,8 +268,6 @@ module.exports = {
                 await Users.update({ password : hashedPassword }, { where : { id } }); 
             }
 
-            
-            
             const userUpdate = await Users.update(
                 {
                     fullname : body.fullname,

@@ -1,5 +1,5 @@
 //const { check } = require('express-validator');
-const { Movies } = require('../models')
+const { Movies, Genres, MoviesGenres } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
 const sequelize = require('sequelize')
@@ -111,6 +111,10 @@ module.exports = {
         const offset = limit * (page - 1);
 
         try {
+            if(!page){
+                page = 1
+            }
+
             const MoviesData = await Movies.findAll({
                 limit : limit,
                 offset : offset,
@@ -263,7 +267,7 @@ module.exports = {
                         [sequelize.Op.iLike] : "%" + keywords + "%"
                     } 
                 },
-                limit : 10
+                limit : 15
             })
 
             return res.status(200).json({
@@ -271,6 +275,59 @@ module.exports = {
                 messsage : "Successfully retrieve data movie",
                 result : datamovie
             })
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
+    getAllMoviesByGenre : async (req, res) => {
+        const limit = 15;
+        const page = parseInt(req.params.page);
+        const offset = limit * (page - 1);
+        const name = req.params.name
+
+        try {
+            const MoviesData = await Genres.findOne({
+                where : { name },
+                attributes : {exclude : ["createdAt", "updatedAt"]},
+                include : [{
+                    model : Movies,
+                    through : {attributes : []},
+                    as : "Genres Movie",
+                    //attributes : {exclude : ["id", "createdAt", "updatedAt"]}
+                }],
+                limit : limit,
+                offset : offset,
+                order : [["createdAt", "DESC"]]
+            }); 
+            
+            //check jika data admin sudah ada nilai/isi nya di table
+            if(!MoviesData) {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Data not found"
+                });
+            }
+
+            const count = await Movies.count({ distinct: true });
+            let next = page + 1;
+            if (page * limit >= count) {
+                next = 0;
+            }
+
+            return res.status(200).json({
+                status : "success",
+                message : "Succesfully retrieved All data Movies",
+                data: MoviesData,
+                meta : {
+                    page: page,
+                    next: next,
+                    total: count
+                }
+            });
         } catch (error) {
             return res.status(500).json({
                 status : "failed",
