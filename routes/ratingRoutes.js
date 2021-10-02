@@ -10,3 +10,6 @@ router.get('/:id', review.getOneReview);
 router.post('/', auth, review.postReview);
 router.delete('/delete/:id', auth, review.deleteReview);
 router.put('/update/:id', auth, review.updateReview);
+
+
+module.exports = router
