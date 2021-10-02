@@ -15,20 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         {
           through: models.Watchlists,
           as: "watchlists"
-        }
-      )
+        })
       Movies.belongsToMany(models.Users,
         {
           through: models.Reviews,
           as : "reviews"
-        }
-      )
+        })
       Movies.belongsToMany(models.Tags,
         {
           through: models.MoviesTags,
           as: "moviestags"
-        }
-      )
+        })
       Movies.belongsToMany(models.Genres, {
         through: models.MoviesGenres,
         as: "moviesgenre"

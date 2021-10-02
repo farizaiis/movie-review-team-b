@@ -1,4 +1,3 @@
-//const { check } = require('express-validator');
 const { Movies, Genres, MoviesGenres } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
@@ -159,7 +158,7 @@ module.exports = {
 
         try {
             const MoviesData = await Genres.findOne({
-                where : { name : names } ,
+                where : { name : names.toLowerCase() } ,
                 attributes : {exclude : ["id", "createdAt", "updatedAt"]},
                 include : [{
                     model : Movies,
@@ -167,8 +166,7 @@ module.exports = {
                     attributes : {exclude : ["id", "createdAt", "updatedAt"]}
                 }],
                 limit : limit,
-                offset : offset,
-                order : [["createdAt", "DESC"]]
+                offset : offset
             }); 
             
             if(!MoviesData) {
@@ -178,11 +176,11 @@ module.exports = {
                 });
             }
 
-            // const count = await Movies.count({ distinct: true });
-            // let next = page + 1;
-            // if (page * limit >= count) {
-            //     next = 0;
-            // }
+            const count = await Movies.count({ distinct: true });
+            let next = page + 1;
+            if (page * limit >= count) {
+                next = 0;
+            }
 
             return res.status(200).json({
                 status : "success",

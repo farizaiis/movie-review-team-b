@@ -12,13 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       MoviesGenres.belongsTo(models.Movies, {
-        foreignKey: "MovieId",
-        sourceKey : "id"
+        foreignKey: "MovieId"
       });
   
       MoviesGenres.belongsTo(models.Genres, {
-        foreignKey: "GenreId",
-        sourceKey : "id"
+        foreignKey: "GenreId"
       })
     }
   };

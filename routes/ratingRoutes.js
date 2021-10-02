@@ -5,7 +5,7 @@ const review = require('../controllers/reviewsControllers');
 const auth = require('../middlewares/authentication');
 
 
-router.get('/', review.getAllReview);
+router.get('/:page', review.getAllReview); //aku edit lagi ya mba
 router.get('/:id', review.getOneReview);
 router.post('/', auth, review.postReview);
 router.delete('/delete/:id', auth, review.deleteReview);

@@ -5,12 +5,12 @@ const auth = require('../middlewares/authentication')
 const author = require('../middlewares/authorization')
 const uploadPoster = require('../middlewares/uploadPoster')
 
-router.post("/post", auth, uploadPoster("poster"), author.authAdmin, movies.postMovie)  
+router.post("/post", auth, author.authAdmin, uploadPoster("poster"), movies.postMovie)  
 router.get("/:id", movies.getOneMovie)
 router.get("/all/:page", movies.getAllMovies)
 router.get("/genre/:name/:page", movies.getAllMoviesByGenre)
 router.put("/update/:id", auth, author.authAdmin, uploadPoster("poster"), movies.updateMovies)
 router.delete("/delete/:id", auth, author.authAdmin, movies.deleteMovies)
-router.get("/search/:keyword", movies.searchMoviesbyTitle)
+router.get("/search/:title", movies.searchMoviesbyTitle)
 
 module.exports = router
