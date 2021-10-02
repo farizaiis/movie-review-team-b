@@ -1,65 +1,90 @@
-const { Genres } = require('../models');
+const { Genre } = require('../models');
 
-class GenresController{
+class genresController{
 
-    static create (req, res, next) {
+    static async create (req, res, next) {
         let { name } = req.body;
+        
+        if(!name) {
+            res.status(400).json({ 
+                status: "failed",
+                message: "Please put Genre name",
+            });
+        };
 
-        Genres.create({
+        const genreName  = await Genre.findOne({ where: {name: name}});
+
+        if(genreName) {
+            res.status(400).json({ 
+                status: "failed",
+                message: "Genre already been used, please add another Genre",
+            });
+        } else {const createGenre = await Genre.create({
             name: name
-        })
-        .then(data => {
-            res.status(201).json({ message: 'Genres has been created'});
-        })
-        .catch(next);
+        })}
+        res.status(201).json({
+            status: "Success",
+            message: "Genre has been create"
+        });
     };
 
     static getAll (req, res, next) {
-        Genres.findAll()
+        Genre.findAll()
         .then(data => {
             res.status(200).json({ 
-                Genres: data
+                Genre: data
             })
         })
         .catch(next)
     };
 
-    static update (req, res, next) {
+    static async update (req, res, next) {
         let { id } = req.params;
         let { name } = req.body;
 
-        Genres.update({
+        const dataGenre = await Genre.findOne({ where: {id: id}})
+
+        if(!dataGenre) {
+            res.status(400).json({
+                status: "failed",
+                message: `genres id ${id} is not found`
+            })
+        } else {
+        Genre.update({
             name: name
         },{
             where: {
                 id: id
             }
-        })
-        .then(data => {
-            if (!data) {
-                throw { message: `Genres id ${id} is not found `}
-            } else {
-                res.status(200).json({ message: `Genres id ${id} has been updated`})
-            };
         });
     };
+        res.status(200).json({ 
+            message: `genres id ${id} has been updated`
+        })    
+    };
 
-    static delete (req, res, next) {
+    static async delete (req, res, next) {
         let { id } = req.params;
+        let dataGenre = await Genre.findOne({ where: {id:id}})
 
-        Genres.destroy({
+        if(!dataGenre) {
+            res.status(400).json({ 
+                status: "fail",
+                message: `genres id ${id} is not found`
+            })
+        };
+
+        const deleteGenre = await Genre.destroy({
             where : {
                 id: id
             }
-        })
-        .then(data=> {
-            if (!data) {
-                throw { message: `Genres id ${id} is not found` }
-            } else {
-                res.status(200).json({ message: `Genres ${id} has been deleted`})
-            };
         });
-    };
-}
+        
+        res.status(200).json({
+            status: "success", 
+            message: `genres ${id} has been deleted`
+        });
+    };    
+};
 
-module.exports = GenresController;
+module.exports = genresController;

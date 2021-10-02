@@ -5,6 +5,8 @@ const indexRouter = require('./routes/index.routes')
 
 const port = process.env.PORT || 1107
 
+//mas rizky pakai 8080
+
 app.use(express.json())
 app.use(cors())
 app.use('/', indexRouter)

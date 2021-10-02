@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const TagsController = require('../controllers/tagsControllers');
+const tagsController = require('../controllers/tagsControllers');
 const { authAdmin } = require('../middlewares/authorization');
 const auth = require('../middlewares/authentication');
 
-router.post('/create', auth, authAdmin, TagsController.create);
-router.get('/', auth, authAdmin, TagsController.getAll);
-router.put('/update/:id', auth, authAdmin, TagsController.update);
-router.delete('/delete/:id', auth, authAdmin, TagsController.delete);
+router.post('/create',  tagsController.create);
+router.get('/',   tagsController.getAll);
+router.put('/update/:id', tagsController.update);
+router.delete('/delete/:id', tagsController.delete);
 
 module.exports = router;
