@@ -9,6 +9,7 @@ router.post("/post", auth, author.authAdmin, uploadPoster("poster"), movies.post
 router.get("/:id", movies.getOneMovie)
 router.get("/all/:page", movies.getAllMovies)
 router.get("/genre/:name/:page", movies.getAllMoviesByGenre)
+router.get("/listgenre/:id", movies.getAllGenreByMovieId)
 router.put("/update/:id", auth, author.authAdmin, uploadPoster("poster"), movies.updateMovies)
 router.delete("/delete/:id", auth, author.authAdmin, movies.deleteMovies)
 router.get("/search/:title", movies.searchMoviesbyTitle)

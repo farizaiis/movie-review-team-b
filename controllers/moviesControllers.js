@@ -200,6 +200,56 @@ module.exports = {
         }
     },
 
+    getAllGenreByMovieId : async (req, res) => {
+        // const limit = 15;
+        // const page = parseInt(req.params.page);
+        // const offset = limit * (page - 1);
+        const id = req.params.id
+
+        try {
+            const GenreData = await Movies.findOne({
+                where : { id : id } ,
+                attributes : {exclude : ["id", "createdAt", "updatedAt"]},
+                include : [{
+                    model : Genres,
+                    as : "moviesgenre",
+                    attributes : {exclude : ["id", "createdAt", "updatedAt"]}
+                }],
+                // limit : limit,
+                // offset : offset
+            }); 
+            
+            if(!GenreData) {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Data not found"
+                });
+            }
+
+            // const count = await Movies.count({ distinct: true });
+            // let next = page + 1;
+            // if (page * limit >= count) {
+            //     next = 0;
+            // }
+
+            return res.status(200).json({
+                status : "success",
+                message : "Succesfully retrieved All data Genre By Movie",
+                data: GenreData,
+                // meta : {
+                //     page: page,
+                //     next: next,
+                //     total: count
+                // }
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
     updateMovies : async (req, res) => {
         const body = req.body
         const id = req.params.id
@@ -315,6 +365,15 @@ module.exports = {
                 },
                 limit : 15
             })
+
+            if(datamovie == "search") {
+                const allmovie = await Movies.findAll()
+                return res.status(200).json({
+                    status : "success",
+                    messsage : "Successfully retrieve data movie",
+                    result : allmovie
+                })
+            }
 
             return res.status(200).json({
                 status : "success",

@@ -6,6 +6,7 @@
 - Get character by movie?
 - Get review by movie?
 - Bisa search by Genre?
+- Get genre by movie (done)
 
 ### Genre 
 - Validasi Genre agar jadi lowercase (done)
