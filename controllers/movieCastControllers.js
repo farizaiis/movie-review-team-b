@@ -1,4 +1,4 @@
-const { MoviesCast, Movies, Artists, Genres } = require('../models');
+const { MoviesCast, Movies, Artists } = require('../models');
 
 
 class MoviesCastControllers {

@@ -9,5 +9,3 @@ router.get('/moviebytagid', MoviesTagsControllers.getMovieByTagId);
 router.get('/datatagmovie', MoviesTagsControllers.getTagsByMovie)
 router.put('/update/:id', auth, authAdmin, MoviesTagsControllers.update);
 router.delete('/delete/:id', auth, authAdmin, MoviesTagsControllers.delete);
-
-module.exports = router;

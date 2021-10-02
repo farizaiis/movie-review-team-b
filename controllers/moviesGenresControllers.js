@@ -4,6 +4,26 @@ const { MoviesGenres, Genres, Movies } = require('../models');
 class MoviesGenresControllers {
     static async create (req, res, next) {
         let { MovieId, GenreId } = req.body;
+
+        const checkMovieId = await Movies.findOne({
+            where: {
+                id: MovieId
+            }
+        })
+
+        const checkGenreId = await Genres.findOne({
+            where: {
+                id: GenreId
+            }
+        })
+
+        if(!checkMovieId || !checkGenreId) {
+            res.status(400).json({
+                status: "failed",
+                message: "Movie or Genre Not Found"
+            })
+        }
+
         const dataGenre = await MoviesGenres.findOne({
             where: {
                 MovieId: MovieId,
@@ -25,76 +45,6 @@ class MoviesGenresControllers {
         
     };
 
-    // static async getAllMoviesByGenres(req, res, next) {
-    //     console.log(req.query)
-    //     let { page } = req.query;
-
-    //     if(!page) {
-    //         page = 1
-    //     }
-    //     const allMovies = await Movies.findAll({
-    //             include: [
-    //                 {
-    //                     model: MoviesGenres,
-    //                     include: [{
-    //                         model: Genres,
-    //                         attributes: ["name"]
-    //                     }],
-    //                 }
-    //             ],
-    //             offset: 15*(page-1),
-    //             limit: 15
-    //         });
-    //     res.status(200).json(allMovies)
-    // };
-
-    // static async getMovieByGenreId(req, res) {
-    //     let { page } = req.query;
-    //     let { GenreId } = req.query;
-
-    //     if(!page) {
-    //         page = 1
-    //     }
-    //     const moviesByGenre = await Movies.findAll({
-    //                     include: [ 
-    //                         { 
-    //                             model: MoviesGenres,
-    //                             attributes : { exclude : ["id", "MovieId", "updatedAt", "createdAt"]},
-    //                             where: {
-    //                                 GenreId: GenreId
-    //                             }, include: Genres,
-    //                         }
-    //                     ],
-    //             offset: 15*(page-1),
-    //             limit: 15
-    //         });
-    //     res.status(200).json(moviesByGenre)
-    // };
-
-
-    // static async getGenresByMovie(req, res, next) {
-    //     let { page } = req.query;
-    //     let { MovieId } = req.query;
-
-    //     if(!page) {
-    //         page = 1
-    //     }
-    //     const dataGenreMovie = await Movies.findAll({
-    //                     include: [ 
-    //                         { 
-    //                             model: MoviesGenres,
-    //                             where: {
-    //                                 MovieId: MovieId
-    //                             }, 
-    //                             include: Genres,
-    //                         }
-    //                     ],
-    //             offset: 15*(page-1),
-    //             limit: 15
-    //         });
-    //     res.status(200).json(dataGenreMovie)
-    // }; 
-
     static getAll (req, res, next) {
         MoviesGenres.findAll()
         .then(data => {
@@ -108,30 +58,49 @@ class MoviesGenresControllers {
     static async update (req, res, next){
         let { id } = req.params;
         let { MovieId, GenreId } = req.body;
-        const idMoviesGenres = await MoviesGenres.findOne({where: {id: id}});
-
-        if(!idMoviesGenres ) {
+        const idMovieGenre = await MoviesGenres.findOne({where: {id: id}});
+        
+        if(!idMovieGenre ) {
             res.status(400).json({
                 status: "failed",
                 message: `Movies genres id ${id} has not found`
             })
-        } else if (!MovieId || !GenreId) {
+            } else if (!MovieId || !GenreId) {
+                res.status(400).json({
+                    status: "failed",
+                    message: "Please fill the required"
+                })
+            }
+            
+        const checkUpdateMovieGenre = await MoviesGenres.findOne({
+            where: {
+                MovieId: MovieId,
+                GenreId: GenreId
+            }
+        })
+        
+        if(checkUpdateMovieGenre) {
             res.status(400).json({
                 status: "failed",
-                message: "Please fill the required"
+                message: "Movie already have the Genre"
             })
-        } else {
-            MoviesGenres.update({
-            MovieId: MovieId,
-            GenreId: GenreId
-        }, {
-            where: {
-                id: id
-            }
-        })};
-        res.status(200).json({ message: `Movie id ${MovieId} with genres id ${GenreId} has been updated`})
-            
+        } 
+                
+        const updateMov = await MoviesGenres.update({
+                MovieId: MovieId,
+                GenreId: GenreId
+            }, {
+                where: {
+                    id: id
+                }
+            });
+
+        if(updateMov) {
+            res.status(200).json({
+                message: `Movie id ${MovieId} with genres id ${GenreId} has been updated`
+            })}
     };
+
 
     static delete (req, res, next) {
         let { id } = req.params;
