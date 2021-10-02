@@ -52,7 +52,7 @@ module.exports = {
 
             const allRating = await Reviews.findAll({
                 where : {
-                    movieId : movieId
+                    MovieId : body.MovieId //aku benerin ya mba
                 }
             })
 
@@ -66,11 +66,10 @@ module.exports = {
             const ratingFix = Math.round(sum / ratingAverage.length)
 
             const newMovie = await Movies.update({
-                ...body,
-                rating: ratingFix,
+                rating: ratingFix //aku benerin lagi ya mba
             }, {
                 where: {
-                    movieId : movieId
+                    id : body.MovieId
                 }
             })
 
@@ -101,7 +100,7 @@ module.exports = {
         const id = req.params.id
         try {
             const oneReview = await Reviews.findOne({ where: { id } });
-            console.log(oneReview + "test")
+            // console.log(oneReview + "test")
             if (!oneReview) {
                 return res.status(400).json({
                     status: "failed",
@@ -131,7 +130,7 @@ module.exports = {
             const dataReview = await Reviews.findAll({
                 limit: limit,
                 offset: offset,
-                order: [["createdAt", "updatedAt"]]
+                // order: [["createdAt", "updatedAt"]]
             });
 
             if (!dataReview) {

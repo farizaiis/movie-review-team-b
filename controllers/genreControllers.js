@@ -1,6 +1,6 @@
-const { Genre } = require('../models');
+const { Genres } = require('../models');
 
-class genresController{
+class GenresController{
 
     static async create (req, res, next) {
         let { name } = req.body;
@@ -8,31 +8,31 @@ class genresController{
         if(!name) {
             res.status(400).json({ 
                 status: "failed",
-                message: "Please put Genre name",
+                message: "Please put Genres name",
             });
         };
 
-        const genreName  = await Genre.findOne({ where: {name: name}});
+        const GenresName  = await Genres.findOne({ where: {name: name.toLowerCase()}});
 
-        if(genreName) {
+        if(GenresName) {
             res.status(400).json({ 
                 status: "failed",
-                message: "Genre already been used, please add another Genre",
+                message: "Genres already been used, please add another Genres",
             });
-        } else {const createGenre = await Genre.create({
-            name: name
+        } else {const createGenres = await Genres.create({
+            name: name.toLowerCase()
         })}
         res.status(201).json({
             status: "Success",
-            message: "Genre has been create"
+            message: "Genres has been create"
         });
     };
 
     static getAll (req, res, next) {
-        Genre.findAll()
+        Genres.findAll()
         .then(data => {
             res.status(200).json({ 
-                Genre: data
+                Genres: data
             })
         })
         .catch(next)
@@ -42,16 +42,16 @@ class genresController{
         let { id } = req.params;
         let { name } = req.body;
 
-        const dataGenre = await Genre.findOne({ where: {id: id}})
+        const dataGenres = await Genres.findOne({ where: {id: id}})
 
-        if(!dataGenre) {
+        if(!dataGenres) {
             res.status(400).json({
                 status: "failed",
-                message: `genres id ${id} is not found`
+                message: `Genres id ${id} is not found`
             })
         } else {
-        Genre.update({
-            name: name
+        Genres.update({
+            name: name.toLowerCase()
         },{
             where: {
                 id: id
@@ -59,32 +59,32 @@ class genresController{
         });
     };
         res.status(200).json({ 
-            message: `genres id ${id} has been updated`
+            message: `Genres id ${id} has been updated`
         })    
     };
 
     static async delete (req, res, next) {
         let { id } = req.params;
-        let dataGenre = await Genre.findOne({ where: {id:id}})
+        let dataGenres = await Genres.findOne({ where: {id:id}})
 
-        if(!dataGenre) {
+        if(!dataGenres) {
             res.status(400).json({ 
                 status: "fail",
-                message: `genres id ${id} is not found`
+                message: `Genres id ${id} is not found`
             })
         };
 
-        const deleteGenre = await Genre.destroy({
+        const deleteGenres = await Genres.destroy({
             where : {
                 id: id
             }
         });
-        
+
         res.status(200).json({
             status: "success", 
-            message: `genres ${id} has been deleted`
+            message: `Genres ${id} has been deleted`
         });
     };    
 };
 
-module.exports = genresController;
+module.exports = GenresController;

@@ -1,10 +1,10 @@
-const { MovieGenre, Genre, Movies } = require('../models');
+const { MoviesGenres, Genres, Movies } = require('../models');
 
 
 class MoviesGenresControllers {
     static async create (req, res, next) {
         let { MovieId, GenreId } = req.body;
-        const dataGenre = await MovieGenre.findOne({
+        const dataGenre = await MoviesGenres.findOne({
             where: {
                 MovieId: MovieId,
                 GenreId: GenreId
@@ -17,7 +17,7 @@ class MoviesGenresControllers {
                 message: "Movie already have the Genre, please put another"
             })
         } else {
-            MovieGenre.create({
+            MoviesGenres.create({
             MovieId: MovieId,
             GenreId: GenreId
         })}
@@ -25,82 +25,92 @@ class MoviesGenresControllers {
         
     };
 
-    static async getAllMoviesByGenres(req, res, next) {
-        console.log(req.query)
-        let { page } = req.query;
+    // static async getAllMoviesByGenres(req, res, next) {
+    //     console.log(req.query)
+    //     let { page } = req.query;
 
-        if(!page) {
-            page = 1
-        }
-        const allMovies = await Movies.findAll({
-                include: [
-                    {
-                        model: MovieGenre,
-                        include: [{
-                            model: Genre,
-                            attributes: ["name"]
-                        }],
-                    }
-                ],
-                offset: 15*(page-1),
-                limit: 15
-            });
-        res.status(200).json(allMovies)
+    //     if(!page) {
+    //         page = 1
+    //     }
+    //     const allMovies = await Movies.findAll({
+    //             include: [
+    //                 {
+    //                     model: MoviesGenres,
+    //                     include: [{
+    //                         model: Genres,
+    //                         attributes: ["name"]
+    //                     }],
+    //                 }
+    //             ],
+    //             offset: 15*(page-1),
+    //             limit: 15
+    //         });
+    //     res.status(200).json(allMovies)
+    // };
+
+    // static async getMovieByGenreId(req, res) {
+    //     let { page } = req.query;
+    //     let { GenreId } = req.query;
+
+    //     if(!page) {
+    //         page = 1
+    //     }
+    //     const moviesByGenre = await Movies.findAll({
+    //                     include: [ 
+    //                         { 
+    //                             model: MoviesGenres,
+    //                             attributes : { exclude : ["id", "MovieId", "updatedAt", "createdAt"]},
+    //                             where: {
+    //                                 GenreId: GenreId
+    //                             }, include: Genres,
+    //                         }
+    //                     ],
+    //             offset: 15*(page-1),
+    //             limit: 15
+    //         });
+    //     res.status(200).json(moviesByGenre)
+    // };
+
+
+    // static async getGenresByMovie(req, res, next) {
+    //     let { page } = req.query;
+    //     let { MovieId } = req.query;
+
+    //     if(!page) {
+    //         page = 1
+    //     }
+    //     const dataGenreMovie = await Movies.findAll({
+    //                     include: [ 
+    //                         { 
+    //                             model: MoviesGenres,
+    //                             where: {
+    //                                 MovieId: MovieId
+    //                             }, 
+    //                             include: Genres,
+    //                         }
+    //                     ],
+    //             offset: 15*(page-1),
+    //             limit: 15
+    //         });
+    //     res.status(200).json(dataGenreMovie)
+    // }; 
+
+    static getAll (req, res, next) {
+        MoviesGenres.findAll()
+        .then(data => {
+            res.status(200).json({ 
+                MoviesGenres: data
+            })
+        })
+        .catch(next)
     };
-
-    static async getMovieByGenreId(req, res) {
-        let { page } = req.query;
-        let { GenreId } = req.query;
-
-        if(!page) {
-            page = 1
-        }
-        const moviesByGenre = await Movies.findAll({
-                        include: [ 
-                            { 
-                                model: MovieGenre,
-                                attributes : { exclude : ["id", "MovieId", "updatedAt", "createdAt"]},
-                                where: {
-                                    GenreId: GenreId
-                                }, include: Genre,
-                            }
-                        ],
-                offset: 15*(page-1),
-                limit: 15
-            });
-        res.status(200).json(moviesByGenre)
-    };
-
-
-    static async getGenresByMovie(req, res, next) {
-        let { page } = req.query;
-        let { MovieId } = req.query;
-
-        if(!page) {
-            page = 1
-        }
-        const dataGenreMovie = await Movies.findAll({
-                        include: [ 
-                            { 
-                                model: MovieGenre,
-                                where: {
-                                    MovieId: MovieId
-                                }, 
-                                include: Genre,
-                            }
-                        ],
-                offset: 15*(page-1),
-                limit: 15
-            });
-        res.status(200).json(dataGenreMovie)
-    }; 
 
     static async update (req, res, next){
         let { id } = req.params;
         let { MovieId, GenreId } = req.body;
-        const idMovieGenre = await MovieGenre.findOne({where: {id: id}});
+        const idMoviesGenres = await MoviesGenres.findOne({where: {id: id}});
 
-        if(!idMovieGenre ) {
+        if(!idMoviesGenres ) {
             res.status(400).json({
                 status: "failed",
                 message: `Movies genres id ${id} has not found`
@@ -111,7 +121,7 @@ class MoviesGenresControllers {
                 message: "Please fill the required"
             })
         } else {
-            MovieGenre.update({
+            MoviesGenres.update({
             MovieId: MovieId,
             GenreId: GenreId
         }, {
@@ -126,7 +136,7 @@ class MoviesGenresControllers {
     static delete (req, res, next) {
         let { id } = req.params;
 
-        MovieGenre.destroy({
+        MoviesGenres.destroy({
             where : {
                 id: id
             }
