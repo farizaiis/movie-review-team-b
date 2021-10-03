@@ -1,4 +1,4 @@
-const { Movies, Genres, MoviesGenres } = require('../models')
+const { Movies, Genres, Artists, Tags } = require('../models')
 require('dotenv').config();
 const Joi = require('joi').extend(require('@joi/date'))
 const sequelize = require('sequelize')
@@ -109,10 +109,6 @@ module.exports = {
         const offset = limit * (page - 1);
 
         try {
-            // if(!page){
-            //     page = 1
-            // }
-
             const MoviesData = await Movies.findAll({
                 limit : limit,
                 offset : offset,
@@ -201,9 +197,6 @@ module.exports = {
     },
 
     getAllGenreByMovieId : async (req, res) => {
-        // const limit = 15;
-        // const page = parseInt(req.params.page);
-        // const offset = limit * (page - 1);
         const id = req.params.id
 
         try {
@@ -215,8 +208,6 @@ module.exports = {
                     as : "moviesgenre",
                     attributes : {exclude : ["id", "createdAt", "updatedAt"]}
                 }],
-                // limit : limit,
-                // offset : offset
             }); 
             
             if(!GenreData) {
@@ -226,21 +217,146 @@ module.exports = {
                 });
             }
 
-            // const count = await Movies.count({ distinct: true });
-            // let next = page + 1;
-            // if (page * limit >= count) {
-            //     next = 0;
-            // }
-
             return res.status(200).json({
                 status : "success",
                 message : "Succesfully retrieved All data Genre By Movie",
                 data: GenreData,
-                // meta : {
-                //     page: page,
-                //     next: next,
-                //     total: count
-                // }
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
+    getAllTagByMovieId : async (req, res) => {
+        const id = req.params.id
+
+        try {
+            const TagData = await Movies.findOne({
+                where : { id : id } ,
+                attributes : {exclude : ["id", "createdAt", "updatedAt"]},
+                include : [{
+                    model : Tags,
+                    as : "moviestags",
+                    attributes : {exclude : ["id", "createdAt", "updatedAt"]}
+                }],
+            }); 
+            
+            if(!TagData) {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Data not found"
+                });
+            }
+
+            return res.status(200).json({
+                status : "success",
+                message : "Succesfully retrieved All Movie Tag",
+                data: TagData,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
+    getAllMovieByTagId : async (req, res) => {
+        const id = req.params.id
+
+        try {
+            const MoviesData = await Tags.findOne({
+                where : { id : id } ,
+                attributes : {exclude : ["id", "createdAt", "updatedAt"]},
+                include : [{
+                    model : Movies,
+                    as : "moviestags",
+                    attributes : {exclude : ["id", "createdAt", "updatedAt"]}
+                }],
+            }); 
+            
+            if(!MoviesData) {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Data not found"
+                });
+            }
+
+            return res.status(200).json({
+                status : "success",
+                message : "Succesfully retrieved All Movie Tag",
+                data: MoviesData,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
+    getAllMoviesByArtistId : async (req, res) => {
+        const id = req.params.id
+
+        try {
+            const MoviesData = await Artists.findOne({
+                where : { id : id } ,
+                attributes : {exclude : ["id", "createdAt", "updatedAt"]},
+                include : [{
+                    model : Movies,
+                    as : "moviecast",
+                    attributes : {exclude : ["id", "createdAt", "updatedAt"]}
+                }],
+            }); 
+            
+            if(!MoviesData) {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Data not found"
+                });
+            }
+
+            return res.status(200).json({
+                status : "success",
+                message : "Succesfully retrieved All data Movies",
+                data: MoviesData,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status : "failed",
+                message : "Internal Server Error"
+            })
+        }
+    },
+
+    getAllArtistByMovieId : async (req, res) => {
+        const id = req.params.id
+
+        try {
+            const ArtistData = await Movies.findOne({
+                where : { id : id } ,
+                attributes : {exclude : ["id", "createdAt", "updatedAt"]},
+                include : [{
+                    model : Artists,
+                    as : "moviecast",
+                    attributes : {exclude : ["id", "createdAt", "updatedAt"]}
+                }],
+            }); 
+            
+            if(!ArtistData) {
+                return res.status(400).json({
+                    status : "failed",
+                    message : "Data not found"
+                });
+            }
+
+            return res.status(200).json({
+                status : "success",
+                message : "Succesfully retrieved All data Artist",
+                data: ArtistData,
             });
         } catch (error) {
             return res.status(500).json({

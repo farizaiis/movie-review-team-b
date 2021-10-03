@@ -153,6 +153,59 @@ module.exports = {
         }
     },
 
+    getAllReviewByMovie: async (req, res) => {
+        const id = req.params.id
+        try {
+            const dataReview = await Reviews.findAll({
+            where: {MovieId: id}}
+            );
+            
+            if (!dataReview) {
+                return res.status(400).json({
+                    status: "failed",
+                    message: "Data not found"
+                });
+            }
+            return res.status(200).json({
+                status: "success",
+                message: "Succesfully Retrieved Review",
+                data: dataReview
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "failed",
+                message: "Internal Server Error"
+            })
+        }
+    },
+
+    getAllReviewByUser: async (req, res) => {
+        try {
+            const dataReview = await Reviews.findAll({
+            where: {UserId: req.users.id}}
+            );
+            
+            if (!dataReview) {
+                return res.status(400).json({
+                    status: "failed",
+                    message: "Data not found"
+                });
+            }
+            return res.status(200).json({
+                status: "success",
+                message: "Succesfully Retrieved Review",
+                data: dataReview
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "failed",
+                message: "Internal Server Error"
+            })
+        }
+    },
+
     updateReview: async (req, res) => {
         const body = req.body
         const id = req.params.id
@@ -252,6 +305,18 @@ module.exports = {
     deleteReview: async (req, res) => {
         const id = req.params.id
         try {
+            const getUserId = await Reviews.findOne({
+
+                where : {id}
+            })
+
+            if(getUserId.dataValues.UserId != req.users.id) {
+                return res.status(400).json({
+                    status : "Failed",
+                    message : "Cannot delete other user Review"
+                })
+            }
+            
             const dataReview = await Reviews.destroy({ where: { id } });
             if (!dataReview) {
                 return res.status(400).json({

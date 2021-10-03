@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       })
       Movies.belongsToMany(models.Artists, {
         through: models.MoviesCasts,
-        as: "moviecasts"
+        as: "moviecast"
       })
     }
   };

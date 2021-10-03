@@ -1,6 +1,5 @@
 const { Artists } = require('../models')
 const joi = require('joi')
-// const {validator} = require('./../helpers/validator')
 
 module.exports = {
     addArtist: async (req, res) => {
@@ -21,7 +20,6 @@ module.exports = {
             })
             
             if(error){
-                console.log("🚀 ~ file: ArtistsController.js ~ line 24 ~ addartist: ~ error", error)
                 return res.status(400).json({
                     status: "failed",
                     message: "input uncorrectly",
@@ -146,11 +144,21 @@ module.exports = {
 
             if(error){
                 console.log("🚀 ~ file: ArtistsController.js ~ line 27 ~ addartist: ~ error", error)
-                res.status(400).json({
+                return res.status(400).json({
                     status: "failed",
                     message: "input uncorrectly",
                     errors: error["details"][0]["message"]
                 })
+            }
+
+            if(fullname) {
+                const checkArtis = await Artists.findOne({where : {fullname : fullname}})
+                if(checkArtis){
+                    return res.status(400).json({
+                        status: "failed",
+                        message: `Artist ${fullname} already exists`
+                    });
+                }
             }
 
             await Artists.update(
@@ -166,9 +174,9 @@ module.exports = {
             
             const editArtists = await Artists.findByPk(id)
 
-            res.status(200).json({
+            return res.status(200).json({
                 status: "success",
-                message: `success update artist ${fullname}`,
+                message: `success update artist`,
                 data: editArtists
             })
 
@@ -194,15 +202,15 @@ module.exports = {
             })
 
             if (!removeArtist) {
-                res.status(400).json({
+                return res.status(400).json({
                     status: "failed",
-                    message: `failed delete artist id ${id}`
+                    message: "Data not Found"
                 })
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 status: "Success",
-                message: `Success delete artist id ${fullname}`,
+                message: "Success delete the artist data"
             })
         } catch (error) {
             console.log("🚀 ~ file: artistControllers.js ~ line 209 ~ deleteArtist: ~ error", error)

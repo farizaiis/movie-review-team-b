@@ -6,25 +6,25 @@ class GenresController{
         let { name } = req.body;
         
         if(!name) {
-            res.status(400).json({ 
+            return res.status(400).json({ 
                 status: "failed",
-                message: "Please put Genres name",
+                message: "Please put Genre name",
             });
         };
 
-        const GenresName  = await Genres.findOne({ where: {name: name.toLowerCase()}});
+        const genreName  = await Genres.findOne({ where: {name: name}});
 
-        if(GenresName) {
-            res.status(400).json({ 
+        if(genreName) {
+            return res.status(400).json({ 
                 status: "failed",
-                message: "Genres already been used, please add another Genres",
+                message: "Genre already been used, please add another Genre",
             });
-        } else {const createGenres = await Genres.create({
-            name: name.toLowerCase()
+        } else {const createGenre = await Genres.create({
+            name: name
         })}
-        res.status(201).json({
+        return res.status(201).json({
             status: "Success",
-            message: "Genres has been create"
+            message: "Genre has been create"
         });
     };
 
@@ -32,7 +32,7 @@ class GenresController{
         Genres.findAll()
         .then(data => {
             res.status(200).json({ 
-                Genres: data
+                Genre: data
             })
         })
         .catch(next)
@@ -45,11 +45,21 @@ class GenresController{
         const dataGenres = await Genres.findOne({ where: {id: id}})
 
         if(!dataGenres) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: "failed",
                 message: `Genres id ${id} is not found`
             })
-        } else {
+        }
+        
+        const checkName = await Genres.findOne({ where : { name : name}})
+
+        if(checkName){
+            return res.status(400).json({
+                status: "failed",
+                message: `Genre ${name} is added to database`
+            })
+        }
+
         Genres.update({
             name: name.toLowerCase()
         },{
@@ -57,8 +67,8 @@ class GenresController{
                 id: id
             }
         });
-    };
-        res.status(200).json({ 
+
+        return res.status(200).json({ 
             message: `Genres id ${id} has been updated`
         })    
     };
@@ -68,19 +78,19 @@ class GenresController{
         let dataGenres = await Genres.findOne({ where: {id:id}})
 
         if(!dataGenres) {
-            res.status(400).json({ 
+            return res.status(400).json({ 
                 status: "fail",
                 message: `Genres id ${id} is not found`
             })
         };
 
-        const deleteGenres = await Genres.destroy({
+        await Genres.destroy({
             where : {
                 id: id
             }
         });
 
-        res.status(200).json({
+        return res.status(200).json({
             status: "success", 
             message: `Genres ${id} has been deleted`
         });

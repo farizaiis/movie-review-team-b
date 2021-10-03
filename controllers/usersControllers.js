@@ -29,7 +29,6 @@ module.exports = {
                     errors : check.error["details"].map(({ message }) => message )
                 })
             }
-            //check agar email tidak double
             const checkemail = await Users.findOne({
                 where: {
                     email: body.email

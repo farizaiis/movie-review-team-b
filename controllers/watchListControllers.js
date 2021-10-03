@@ -1,14 +1,14 @@
 const { Watchlists, Users, Movies } =  require('../models')
 
 module.exports = {
-    addWachlist: async (req, res) => {  //nanti lanjut biar adem
+    addWachlist: async (req, res) => { 
         const UserId = req.users.id
-        const body = req.body
+        const movieid = req.params.movieid
 
         try {
             const checkMovie = await Watchlists.findOne({
                 where: {
-                    MovieId: body.MovieId,
+                    MovieId: movieid,
                     UserId
                 }
             })
@@ -22,7 +22,7 @@ module.exports = {
 
             const watchlistsCreate = await Watchlists.create({
                 UserId: UserId,
-                MovieId: body.MovieId
+                MovieId: movieid
             })
 
             if (!watchlistsCreate) {
@@ -32,7 +32,7 @@ module.exports = {
                 })
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 status: "success",
                 message: "successfully add to list Watchlists",
                 data: watchlistsCreate
@@ -46,8 +46,8 @@ module.exports = {
         }
     },
 
-    getById: async (req, res) => {
-        const id = req.params.id
+    getByUserId: async (req, res) => {
+        const id = req.users.id
 
         try {
             const getById = await Users.findOne({
@@ -73,7 +73,7 @@ module.exports = {
             })
             return res.status(200).json({
                 status: "success",
-                message: `"success get data watchlist by id ${id}"`,
+                message: `"success get data watchlist by User Id ${id}"`,
                 data: getById
             })
         } catch (error) {
@@ -109,18 +109,18 @@ module.exports = {
             })
 
             if (!removeWatchlists) {
-                res.status(400).json({
+                return res.status(400).json({
                     status: "failed",
                     message: `failed delete Watchlists id ${id}`
                 })
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 status: "Success",
                 message: `Success delete Watchlists id ${id}`,
             })
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 status: "failed",
                 message: "internal server error"
             })

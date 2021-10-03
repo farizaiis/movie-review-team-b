@@ -1,20 +1,19 @@
 # BackendTeam_B
 
-### Movie controller
+### Movie controller (optional)
 - Validasi di get movie by genre ketika kosong
-- Tambahin Meta buat di get by genre
-- Get character by movie?
-- Get review by movie?
+- Validasi di search by title ketika kosong
+- Validasi ketika sudah tidak ada isi di page nya (search all/genre include page)
+- Respon di search ketika tidak ada film yang sesuai
 - Bisa search by Genre?
-- Get genre by movie (done)
 
-### Genre 
-- Validasi Genre agar jadi lowercase (done)
-- Validasi biar ga double saat update
+### Review (optional)
+- Validasi ketika tidak ada movie id yang sesuai params untuk create dan update
+- Validasi ketika sudah tidak ada isi di page nya (search all include page)
 
-### GenresMovies
-- Validasi ketika data Movie/genre Id tidak ada datanya di parent dan returnya tidak sukses
-- Validasi ketika update data tidak boleh sama seperti saat Create
-
-
-
+### OTHER
+- Rapihin Output (tambahin exclude untuk hide field yang perlu di hide)
+- Check limit output
+- Check Error Handling
+- Clean Code
+- Refactor

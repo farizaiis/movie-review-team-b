@@ -1,116 +1,130 @@
-const { MoviesCast, Movies, Artists } = require('../models');
+const { MoviesCasts, Movies, Artists } = require('../models');
 
 
 class MoviesCastControllers {
-    static create (req, res, next) {
-        let { movieId, ArtistId } = req.body;
+    static async postMovieCast (req, res, next) {
+        let { MovieId, ArtistId } = req.body;
 
-        MoviesCast.create({
-            movieId: movieId,
-            ArtistId: ArtistId
+        const checkMovieId = await Movies.findOne({
+            where: {
+                id: MovieId
+            }
         })
-        .then(data => {
-            res.status(201).json({ message: 'movies characters models has been created'})
+
+        const checkArtistId = await Artists.findOne({
+            where: {
+                id: ArtistId
+            }
         })
+
+        if(!checkMovieId || !checkArtistId) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Movie or Artist Not Found"
+            })
+        }
+
+        const data = await MoviesCasts.findOne({
+            where : {
+                MovieId : MovieId,
+                ArtistId : ArtistId
+            }
+        })
+
+        if(data) {
+            return res.status(400).json({
+                status: "Failed",
+                message: 'Movies characters already added'
+        })
+    } else {
+        MoviesCasts.create({
+        MovieId: MovieId,
+        ArtistId: ArtistId
+    })}
+    return res.status(201).json({ message: 'Movies characters models has been created'})
         .catch(next);
     };
 
-    static getAllMoviesByCharacters(req, res, next) {
-        let { page } = req.params;
-
-        if(!page) {
-            page = 1
-        }
-        MoviesCast.findAll({
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Artists
-                },
-                {
-                    model: Genres
-                }
-            ],
-            offset: (15*(page-1))+1,
-            limit: 15
-        });
-        res.status(200).json(MoviesCast)
-    };
-    
-
-    static getMoviesByCharacters(req, res, next) {
-        let { movieId, page } = req.params;
-
-        MoviesCast.findAndCountAll({
-            where: { 
-                movieId: movieId
-            },
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Artists
-                },
-                {
-                    model: Genres
-                }
-            ],
-            offset: (15*(page-1))+1,
-            limit: 15
-        });
-        res.status(200).json(MoviesCast)
-    };
-
-    static getCharactersByMovies(req, res, next) {
-        let { ArtistId } = req.params;
-
-        MoviesCast.findAll({
-            where: { 
-                ArtistId: ArtistId
-            },
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Artists
-                },
-                {
-                    model: Genres
-                }
-            ],
-        });
-        res.status(200).json(MoviesCast)
-    };
-
-    static update (req, res, next){
+    static async movieCastUpdate (req, res, next){
         let { id } = req.params;
-        let { movieId, ArtistId } = req.body;
+        let { MovieId, ArtistId } = req.body;
 
-        MoviesCast.update({
-            movieId: movieId,
+        const checkData = await MoviesCasts.findOne({
+            where : {
+                id
+            }
+        })
+
+        if(!checkData) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Data not Found"
+            })
+        } 
+
+        const movieCast = await MoviesCasts.findOne({
+            where: {
+                MovieId, ArtistId
+            }
+        });
+        
+        if(movieCast) {
+            return res.status(400).json({
+                status: "failed",
+                message: `Cannot Duplicate Data`
+            })
+        } 
+
+        const checkMovieId = await Movies.findOne({
+            where: {
+                id: MovieId
+            }
+        })
+
+        const checkArtistId = await Artists.findOne({
+            where: {
+                id: ArtistId
+            }
+        })
+
+        if(!checkMovieId || !checkArtistId) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Movie or Artist Not Found"
+            })
+        }
+        
+        if (!MovieId || !ArtistId) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Bad Request, Input MovieId and ArtistId"
+            })
+        } else {
+            MoviesCasts.update({
+            MovieId: MovieId,
             ArtistId: ArtistId
         }, {
             where: {
                 id: id
             }
-        })
-        .then(data => {
-            if(!data) {
-                    throw { message: `Characters id ${id} has not found`}
-                } else {
-                    res.status(200).json({ message: `Characters id ${id} has been updated`})
-            }
-        });
+        })};
+        res.status(200).json({ message: `Movie Cast id ${id} has been updated`})
+            
     };
 
-    static delete (res, res, next) {
+    static async movieCastDelete (req, res, next) {
         let { id } = req.params;
 
-        MoviesCast.destroy({
+        const check = await MoviesCasts.findOne({where : {id}})
+
+        if(!check) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Data not Found"
+            })
+        }
+
+        MoviesCasts.destroy({
             where : {
                 id: id
             }
@@ -119,11 +133,10 @@ class MoviesCastControllers {
             if(!data) {
                 throw { message: `Character id ${id} not found`}
             } else {
-                res.status(200).json({ message: `Character id ${id} has been deleted`})
+                res.status(200).json({ message: `Movie Character has been deleted`})
             };
         });
     };
-
 }
 
 module.exports = MoviesCastControllers;

@@ -1,36 +1,40 @@
-const { Tag } = require('../models');
+const { Tags } = require('../models');
 
-class tagsController{
+class TagsController{
 
     static async create (req, res, next) {
         let { name } = req.body;
-        const tagName  = await Tag.findOne({ where: {name: name}});
+        const TagsName  = await Tags.findOne({ where: {name: name}});
 
         if(!name) {
-            res.status(400).json({ 
+            return res.status(400).json({ 
                 status: "failed",
-                message: "Please put Tag name",
+                message: "Please put Tags name",
             });
         }
-        if(tagName) {
-            res.status(400).json({ 
+        if(TagsName) {
+            return res.status(400).json({ 
                 status: "failed",
-                message: "Tag already been used, please add another Tag",
+                message: "Tags already been used, please add another Tags",
             });
-        } else {const createTag = await Tag.create({
+        } 
+
+        const createTags = await Tags.create({
                 name: name
-            })}
-            res.status(201).json({
+            })
+            
+        return res.status(201).json({
                 status: "Success",
-                message: "Tag has been created"
-            }); 
+                message: "Tags has been created",
+                data : createTags
+        }); 
     };
 
     static getAll (req, res, next) {
-        Tag.findAll()
+        Tags.findAll()
         .then(data => {
             res.status(200).json({ 
-                Tag: data
+                Tags: data
             })
         })
         .catch(next)
@@ -40,47 +44,57 @@ class tagsController{
         let { id } = req.params;
         let { name } = req.body;
 
-        const dataTag = await Tag.findOne({where: {id: id}})
+        const dataTags = await Tags.findOne({where: {id: id}})
 
-        if(!dataTag) {
-            res.status(400).json({
+        if(!dataTags) {
+            return res.status(400).json({
                 status: "failed",
-                message: `Tag id ${id} is not found`
+                message: `Tags id ${id} is not found`
             })
         } else if(!name) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: "failed",
                 message: "Please fill the required"
             })
-        } else {
-            Tag.update({
+        }
+
+        const checkName = await Tags.findOne({ where : { name : name}})
+
+        if(checkName){
+            return res.status(400).json({
+                status: "failed",
+                message: `Tag ${name} is already added to database`
+            })
+        }
+
+        Tags.update({
             name: name
         },{
             where: {
                 id: id
             }
-        })}
-        res.status(200).json({ message: `Tag id ${id} has been updated`});
+        })
+        return res.status(200).json({ message: `Tags id ${id} has been updated`});
             
     };
 
     static async delete (req, res, next) {
         let { id } = req.params;
 
-        const dataTag = await Tag.findOne({ where: {id: id}});
+        const dataTags = await Tags.findOne({ where: {id: id}});
 
-        if(!dataTag) {
-            res.status(400).json({
+        if(!dataTags) {
+            return res.status(400).json({
                 status: "failed",
-                message: `Tag id ${id} is not found`
+                message: `Tags id ${id} is not found`
             });
-        } else {Tag.destroy({
+        } else {Tags.destroy({
             where : {
                 id: id
             }
         })}
-        res.status(200).json({ message: `Tag ${id} has been deleted`})
+        return res.status(200).json({ message: `Tags ${id} has been deleted`})
     }        
 }
 
-module.exports = tagsController;
+module.exports = TagsController;

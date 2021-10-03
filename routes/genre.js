@@ -5,7 +5,7 @@ const { authAdmin } = require('../middlewares/authorization')
 const auth = require('../middlewares/authentication')
 
 router.post('/create', auth, authAdmin, genreController.create)
-router.get('/', auth, authAdmin, genreController.getAll)
+router.get('/', genreController.getAll)
 router.put('/update/:id', auth, authAdmin, genreController.update)
 router.delete('/delete/:id', auth, authAdmin, genreController.delete)
 
