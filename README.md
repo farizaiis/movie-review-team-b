@@ -9,6 +9,11 @@ Figma (mobile Version) : https://www.figma.com/file/CrWjGGaXXRblLkTXcFbGpM/Movie
 
 ![WhatsApp Image 2021-11-29 at 4 52 59 PM](https://user-images.githubusercontent.com/46044060/143911577-1aa476dc-4ff1-40ea-a924-1715607a29b0.jpeg)
 
+### TECH STACK USED
+![image](https://user-images.githubusercontent.com/46044060/143913673-d8fa2fcd-dd52-4aa9-bafb-a23dad5a91be.png)
+
+
+
 #### HOW TO RUN IN LOCAL
 - After clone this repo run npm install
 - For create database ---> npx sequelize db:create  
